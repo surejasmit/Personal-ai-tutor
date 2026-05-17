@@ -16,7 +16,7 @@ const HeroSection = () => (
           <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full
                            border border-accent/20 bg-accent/5
                            text-accent-light text-xs font-medium tracking-wide uppercase">
-            <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+            <span className="1.5 h-1.5 rounded-full bg-accent animate-pulse" />
             Now in Beta
           </span>
 
