@@ -1,85 +1,57 @@
 @import "tailwindcss";
 
-/* ===== Tailwind v4 Theme Configuration ===== */
+/* ===== Theme — Inspired by Linear/Vercel/Stripe =====
+   Clean dark theme with emerald accent (growth/education)
+   NO generic AI purple/blue gradients
+*/
 @theme {
-  /* Colors - Dark Theme */
-  --color-bg-primary: #0b0e1a;
-  --color-bg-secondary: #0f1225;
-  --color-bg-card: rgba(15, 18, 37, 0.6);
-  --color-bg-card-hover: rgba(20, 24, 50, 0.8);
-  --color-bg-nav: rgba(11, 14, 26, 0.85);
+  /* Background */
+  --color-bg-primary: #09090b;
+  --color-bg-secondary: #18181b;
+  --color-bg-card: #1c1c1f;
+  --color-bg-elevated: #27272a;
 
-  /* Accent Colors */
-  --color-accent-purple: #7c3aed;
-  --color-accent-purple-light: #a78bfa;
-  --color-accent-purple-glow: rgba(124, 58, 237, 0.3);
-  --color-accent-blue: #3b82f6;
-  --color-accent-indigo: #6366f1;
+  /* Accent — Emerald (symbolizes growth & learning) */
+  --color-accent: #10b981;
+  --color-accent-light: #34d399;
+  --color-accent-dark: #059669;
+  --color-accent-glow: rgba(16, 185, 129, 0.15);
 
-  /* Text Colors */
-  --color-text-primary: #f1f5f9;
-  --color-text-secondary: #94a3b8;
-  --color-text-muted: #64748b;
+  /* Warm secondary — Amber */
+  --color-warm: #f59e0b;
+  --color-warm-light: #fbbf24;
+
+  /* Text */
+  --color-text-primary: #fafafa;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #71717a;
 
   /* Border */
-  --color-border-default: rgba(100, 116, 139, 0.15);
-  --color-border-glow: rgba(124, 58, 237, 0.25);
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-hover: rgba(255, 255, 255, 0.16);
 
-  /* Font Family */
+  /* Font */
   --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   /* Animations */
+  --animate-fade-up: fade-up 0.6s ease-out forwards;
+  --animate-fade-up-delay: fade-up 0.6s ease-out 0.15s forwards;
   --animate-float: float 6s ease-in-out infinite;
-  --animate-float-delayed: float 6s ease-in-out 2s infinite;
-  --animate-pulse-glow: pulse-glow 3s ease-in-out infinite;
-  --animate-slide-up: slide-up 0.6s ease-out forwards;
-  --animate-slide-up-delayed: slide-up 0.6s ease-out 0.2s forwards;
-  --animate-fade-in: fade-in 0.8s ease-out forwards;
 }
 
 /* ===== Keyframes ===== */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
 }
 
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.2); }
-  50% { box-shadow: 0 0 40px rgba(124, 58, 237, 0.4); }
-}
-
-@keyframes slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/*
-  ===== Base Layer Styles =====
-  IMPORTANT: All custom resets MUST be inside @layer base
-  so that Tailwind utility classes can override them.
-  Unlayered styles beat layered styles in CSS cascade.
-*/
+/* ===== Base Layer ===== */
 @layer base {
-  html {
-    scroll-behavior: smooth;
-  }
+  html { scroll-behavior: smooth; }
 
   body {
     min-height: 100vh;
@@ -88,68 +60,37 @@
     color: var(--color-text-primary);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
 
-  #root {
-    width: 100%;
-    min-height: 100vh;
-  }
-
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
-
-  ul {
-    list-style: none;
-  }
-
-  img {
-    max-width: 100%;
-    display: block;
-  }
-
-  button {
-    cursor: pointer;
-    font-family: var(--font-sans);
-  }
+  #root { width: 100%; min-height: 100vh; }
+  a    { text-decoration: none; color: inherit; }
+  ul   { list-style: none; }
+  img  { max-width: 100%; display: block; }
+  button { cursor: pointer; font-family: var(--font-sans); }
 }
 
-/* ===== Custom Scrollbar (pseudo-elements, safe outside layers) ===== */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: var(--color-bg-primary);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--color-accent-purple);
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-accent-purple-light);
-}
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--color-bg-elevated); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
 
-/*
-  ===== Custom Utilities =====
-  Placed in @layer utilities so they integrate
-  naturally with Tailwind's specificity.
-*/
+/* ===== Custom Utilities ===== */
 @layer utilities {
-  /* Glassmorphism Card */
   .glass {
-    background: rgba(15, 18, 37, 0.5);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--color-border-default);
+    background: rgba(24, 24, 27, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--color-border);
   }
-
-  /* Subtle Grid Pattern Background */
   .bg-grid {
     background-image:
-      linear-gradient(rgba(124, 58, 237, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(124, 58, 237, 0.03) 1px, transparent 1px);
-    background-size: 60px 60px;
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+  .bg-dot {
+    background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 24px 24px;
   }
 }
