@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navLinks = ['Home', 'Features', 'About', 'Contact'];
@@ -42,18 +43,18 @@ const Navbar = () => {
 
           {/* DESKTOP AUTH BUTTONS */}
           <div className="hidden md:flex items-center gap-3">
-            <button className="px-5 py-2 text-sm font-medium text-text-secondary
+            <Link to="/login" className="px-5 py-2 text-sm font-medium text-text-secondary
                                rounded-lg border border-border
                                transition-all duration-200
                                hover:text-text-primary hover:border-border-hover">
               Login
-            </button>
-            <button className="px-5 py-2 text-sm font-semibold text-bg-primary
+            </Link>
+            <Link to="/signup" className="px-5 py-2 text-sm font-semibold text-bg-primary
                                rounded-lg bg-accent
                                transition-all duration-200
                                hover:bg-accent-light">
               Sign Up
-            </button>
+            </Link>
           </div>
 
           {/* MOBILE HAMBURGER */}
@@ -81,14 +82,14 @@ const Navbar = () => {
             </a>
           ))}
           <div className="pt-3 flex flex-col gap-2">
-            <button className="w-full py-2.5 text-sm text-text-secondary
+            <Link to="/login" className="w-full py-2.5 text-sm text-text-secondary text-center
                                rounded-lg border border-border">
               Login
-            </button>
-            <button className="w-full py-2.5 text-sm font-semibold text-bg-primary
+            </Link>
+            <Link to="/signup" className="w-full py-2.5 text-sm font-semibold text-bg-primary text-center
                                rounded-lg bg-accent">
               Sign Up
-            </button>
+            </Link>
           </div>
         </div>
       )}
