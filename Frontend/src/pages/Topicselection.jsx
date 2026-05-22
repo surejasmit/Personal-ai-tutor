@@ -10,12 +10,16 @@ const TopicSelection = () => {
     const [loading, setLoading] = useState(true);
 
     const topicIcons = {
+        'AI and ML': Brain,
         'AIML': Brain,
         'Algorithms': Code,
         'Computer Networks': Network,
+        'Database': Database,
         'DBMS': Database,
         'Data Structures': Layers,
+        'Object-Oriented Programming': Cpu,
         'OOP': Cpu,
+        'Operating Systems': Monitor,
         'Operating System': Monitor,
         'Web Development': BookOpen
     };
@@ -73,7 +77,7 @@ const TopicSelection = () => {
                 {topics && topics.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {topics.map((topic) => {
-                            const Icon = topicIcons[topic.name] || BookOpen;
+                            const Icon = topicIcons[topic.topic_name] || BookOpen;
 
                             return (
                                 <div
@@ -87,7 +91,7 @@ const TopicSelection = () => {
                                     </div>
 
                                     {/* Topic Name */}
-                                    <h3 className="text-lg font-semibold mb-2">{topic.name}</h3>
+                                    <h3 className="text-lg font-semibold mb-2">{topic.topic_name}</h3>
 
                                     {/* Description */}
                                     <p className="text-gray-400 text-sm mb-4 line-clamp-2">

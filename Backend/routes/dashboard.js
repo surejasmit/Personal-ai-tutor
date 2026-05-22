@@ -6,10 +6,10 @@ const pool = require('../config/db');
 router.get('/:userId',async(req,res) => {
 
     try{
-        const userId = req.params;
+        const { userId } = req.params;
 
         const quizzesTaken = await pool.query(
-            'select count(*) from quiz_results where user_id = $1',
+            'SELECT COUNT(*) AS total FROM quiz_results WHERE user_id = $1',
             [userId]
         );
 
