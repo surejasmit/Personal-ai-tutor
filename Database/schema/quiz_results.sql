@@ -6,6 +6,7 @@ CREATE TABLE quiz_results (
     total_questions INT,
     correct_answers INT,
     wrong_answers INT,
+    percentage INT,
     attempts INT DEFAULT 1,
     time_taken INT,
     difficulty VARCHAR(20),

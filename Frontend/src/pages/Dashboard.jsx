@@ -63,8 +63,8 @@ const Dashboard = () => {
         {
             icon: BookOpen,
             title: 'Topics Completed',
-            value: loading ? '...' : dashboardData.topicsCompleted.toString(),
-            change: loading ? '' : `+${dashboardData.topicsThisWeek}`,
+            value: loading ? '...' : (dashboardData?.topicsCompleted ?? 0).toString(),
+            change: loading ? '' : `+${dashboardData?.topicsThisWeek ?? 0}`,
             changeLabel: 'this week',
             iconBg: 'bg-emerald-500/10',
             iconColor: 'text-emerald-400',
@@ -72,8 +72,8 @@ const Dashboard = () => {
         {
             icon: Target,
             title: 'Quizzes Taken',
-            value: loading ? '...' : dashboardData.quizzesTaken.toString(),
-            change: loading ? '' : `+${dashboardData.quizzesThisWeek}`,
+            value: loading ? '...' : (dashboardData?.quizzesTaken ?? 0).toString(),
+            change: loading ? '' : `+${dashboardData?.quizzesThisWeek ?? 0}`,
             changeLabel: 'this week',
             iconBg: 'bg-blue-500/10',
             iconColor: 'text-blue-400',
@@ -81,8 +81,8 @@ const Dashboard = () => {
         {
             icon: Award,
             title: 'Average Score',
-            value: loading ? '...' : `${dashboardData.averageScore}%`,
-            change: loading ? '' : `+${dashboardData.scoreImprovement}%`,
+            value: loading ? '...' : `${dashboardData?.averageScore ?? 0}%`,
+            change: loading ? '' : `+${dashboardData?.scoreImprovement ?? 0}%`,
             changeLabel: 'improvement',
             iconBg: 'bg-purple-500/10',
             iconColor: 'text-purple-400',
@@ -90,8 +90,8 @@ const Dashboard = () => {
         {
             icon: Flame,
             title: 'Current Streak',
-            value: loading ? '...' : `${dashboardData.currentStreak} days`,
-            change: dashboardData.currentStreak > 0 ? 'Keep it up!' : 'Start today!',
+            value: loading ? '...' : `${dashboardData?.currentStreak ?? 0} days`,
+            change: (dashboardData?.currentStreak ?? 0) > 0 ? 'Keep it up!' : 'Start today!',
             changeLabel: '🔥',
             iconBg: 'bg-orange-500/10',
             iconColor: 'text-orange-400',

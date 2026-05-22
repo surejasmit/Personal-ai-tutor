@@ -29,7 +29,7 @@ router.get('/start/:topicId', async (req, res) => {
 
         // Get topic name
         const topicQuery = await pool.query(
-            'SELECT name FROM topics WHERE id = $1',
+            'SELECT topic_name FROM topics WHERE id = $1',
             [topicId]
         );
 
@@ -41,7 +41,7 @@ router.get('/start/:topicId', async (req, res) => {
         const questionsQuery = await pool.query(`
             SELECT 
                 id as question_id,
-                question_text,
+                question,
                 option_a,
                 option_b,
                 option_c,
@@ -58,7 +58,7 @@ router.get('/start/:topicId', async (req, res) => {
 
         res.json({
             topicId: parseInt(topicId),
-            topicName: topicQuery.rows[0].name,
+            topicName: topicQuery.rows[0].topic_name,
             questions: questionsQuery.rows
         });
     } catch (error) {
@@ -69,9 +69,9 @@ router.get('/start/:topicId', async (req, res) => {
 
 router.post('/submit',async (req, res) => {
     try{
-        const {userId,topicId,answers,timetaken} = req.body;
+        const {userId,topicId,answers,timeTaken} = req.body;
 
-        if(!userId || !topicId || !Array.isArray(answers) || !timetaken){
+        if(!userId || !topicId || !Array.isArray(answers) || timeTaken === undefined){
             return  res.status(400).json({error:'Invalid request data'});
         }
 
@@ -80,7 +80,7 @@ router.post('/submit',async (req, res) => {
         const correctAnswersQuery = await pool.query(`
             SELECT 
                 id,
-                question_text,
+                question,
                 option_a,
                 option_b,
                 option_c,
@@ -109,7 +109,7 @@ router.post('/submit',async (req, res) => {
 
             return {
                 questionId: answer.questionId,
-                questionText: question.question_text,
+                questionText: question.question,
                 options: {
                     A: question.option_a,
                     B: question.option_b,
@@ -128,9 +128,9 @@ router.post('/submit',async (req, res) => {
 
         // Save quiz result to database
         await pool.query(`
-            INSERT INTO quiz_results (user_id, topic_id, score, total_questions, percentage, created_at)
-            VALUES ($1, $2, $3, $4, $5, NOW())
-        `, [userId, topicId, score, totalQuestions, percentage]);
+            INSERT INTO quiz_results (user_id, topic_id, score, total_questions, correct_answers, wrong_answers, time_taken, percentage, created_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
+        `, [userId, topicId, score, totalQuestions, score, totalQuestions - score, timeTaken, percentage]);
 
         res.json({
             score: score,
