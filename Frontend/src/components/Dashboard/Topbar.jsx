@@ -1,4 +1,5 @@
-import { Search, Bell, ChevronDown } from 'lucide-react';
+import { Search, Bell } from 'lucide-react';
+import StudentProfileMenu from '../StudentProfileMenu';
 
 const TopBar = ({ userName }) => {
   return (
@@ -25,14 +26,8 @@ const TopBar = ({ userName }) => {
         </button>
 
         {/* Profile */}
-        <div className="flex items-center gap-3 pl-4 border-l border-white/5 cursor-pointer hover:bg-white/5 px-3 py-1.5 rounded-lg transition-all">
-          <div className="w-9 h-9 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center">
-            <span className="text-sm font-semibold">
-              {userName ? userName.charAt(0).toUpperCase() : 'U'}
-            </span>
-          </div>
-          <span className="text-sm font-medium">{userName || 'User'}</span>
-          <ChevronDown size={16} className="text-gray-400" />
+        <div className="pl-4 border-l border-white/5">
+          <StudentProfileMenu compact={false} />
         </div>
       </div>
     </header>
