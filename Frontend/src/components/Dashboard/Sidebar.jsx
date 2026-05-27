@@ -1,4 +1,4 @@
-import { LayoutDashboard, TrendingUp, FileText, BookOpen, Bot, Calendar, Trophy, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, TrendingUp, FileText, BookOpen, Bot, Calendar, Trophy, Settings} from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
 const Sidebar = () => {
@@ -43,13 +43,6 @@ const Sidebar = () => {
         ))}
       </nav>
 
-      {/* Logout */}
-      <div className="px-3 py-4 border-t border-white/5">
-        <button className="flex items-center gap-3 px-4 py-2.5 w-full text-gray-400 hover:bg-white/5 hover:text-white rounded-lg transition-all">
-          <LogOut size={20} />
-          <span className="text-sm font-medium">Log Out</span>
-        </button>
-      </div>
     </aside>
   );
 };
