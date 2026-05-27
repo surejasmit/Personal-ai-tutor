@@ -15,9 +15,16 @@ const dashboardRoutes = require('./routes/dashboard');
 app.use('/api/dashboard', dashboardRoutes);
 
 // quizz routes
-
 const quizRoutes = require('./routes/quiz');
 app.use('/api/quiz', quizRoutes);
+
+// profile routes
+const profileRoutes = require('./routes/profile');
+app.use('/api/profile', profileRoutes);
+
+// recommendation routes
+const recommendationRoutes = require('./routes/recommendation')
+app.use('/api/recommendation',recommendationRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
