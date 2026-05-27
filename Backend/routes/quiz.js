@@ -1,6 +1,60 @@
 const express = require('express');
 const pool = require('../config/db');
 const router = express.Router();
+const { spawn } = require('child_process');
+const path = require('path');
+
+/**
+ * Calls the Python ML prediction script after quiz submission.
+ * This runs asynchronously — it won't slow down the quiz response.
+ * 
+ * @param {number} userId - The student's user ID
+ * @param {number} topicId - The topic ID of the quiz
+ * @param {number} percentage - Quiz score percentage
+ * @param {number} score - Number of correct answers
+ * @param {number} wrongAnswers - Number of wrong answers
+ * @param {number} timeTaken - Time taken in seconds
+ */
+function callMLPrediction(userId, topicId, percentage, score, wrongAnswers, timeTaken) {
+    // Path to the Python prediction script
+    const pythonScript = path.join(__dirname, '..', '..', 'ML-Model', 'predict-recommedaion.py');
+    
+    // Spawn a Python process with the required arguments
+    const pythonProcess = spawn('python', [
+        pythonScript,
+        '--user_id', userId.toString(),
+        '--topic_id', topicId.toString(),
+        '--percentage', percentage.toString(),
+        '--score', score.toString(),
+        '--wrong_answers', wrongAnswers.toString(),
+        '--time_taken', timeTaken.toString()
+    ]);
+
+    // Capture the output from the Python script
+    let output = '';
+    pythonProcess.stdout.on('data', (data) => {
+        output += data.toString();
+    });
+
+    // Capture any errors from the Python script
+    pythonProcess.stderr.on('data', (data) => {
+        console.error(`ML Prediction Error: ${data.toString()}`);
+    });
+
+    // When the Python process finishes
+    pythonProcess.on('close', (code) => {
+        if (code === 0) {
+            try {
+                const result = JSON.parse(output);
+                console.log('✅ ML Recommendation:', result.recommended_topic);
+            } catch (e) {
+                console.error('❌ Failed to parse ML output:', output);
+            }
+        } else {
+            console.error(`❌ Python prediction script exited with code ${code}`);
+        }
+    });
+}
 
 router.get('/topics', async (req, res) => {
     try {
@@ -131,7 +185,8 @@ router.post('/submit',async (req, res) => {
             INSERT INTO quiz_results (user_id, topic_id, score, total_questions, correct_answers, wrong_answers, time_taken, percentage, created_at)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
         `, [userId, topicId, score, totalQuestions, score, totalQuestions - score, timeTaken, percentage]);
-
+        
+        callMLPrediction(userId, topicId, percentage, score, totalQuestions - score, timeTaken);
         res.json({
             score: score,
             totalQuestions: totalQuestions,
