@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Search, Bell, ChevronDown, User, Settings, LogOut } from 'lucide-react';
+import { Search, Bell, ChevronDown, User, Settings, LogOut, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const TopBar = ({ userName }) => {
@@ -86,39 +86,55 @@ const TopBar = ({ userName }) => {
                   Student profile
                 </p>
               </div>
+              <span className="hidden text-sm font-bold text-slate-800 sm:block">{userName || 'User'}</span>
+              <ChevronDown size={16} className="hidden text-slate-400 sm:block" />
+            </button>
 
-              <button
-                type="button"
-                onClick={handleProfileClick}
-                className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors"
-              >
-                <User size={16} />
-                Profile
-              </button>
+            {menuOpen && (
+              <div className="absolute right-0 z-50 mt-3 w-60 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
+                <div className="border-b border-slate-100 px-4 py-3">
+                  <p className="text-sm font-bold text-slate-900">{userName || 'User'}</p>
+                  <p className="text-xs text-slate-500">Student profile</p>
+                </div>
 
-              <button
-                type="button"
-                onClick={handleProfileClick}
-                className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors"
-              >
-                <Settings size={16} />
-                Account Settings
-              </button>
+                <button
+                  type="button"
+                  onClick={handleProfileClick}
+                  className="flex w-full items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 transition hover:bg-brand-50 hover:text-brand-dark"
+                >
+                  <User size={16} />
+                  Profile
+                </button>
 
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
-              >
-                <LogOut size={16} />
-                Log Out
-              </button>
-            </div>
-          )}
+                <button
+                  type="button"
+                  onClick={handleProfileClick}
+                  className="flex w-full items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 transition hover:bg-brand-50 hover:text-brand-dark"
+                >
+                  <Settings size={16} />
+                  Account Settings
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="flex w-full items-center gap-3 px-4 py-3 text-sm font-semibold text-red-500 transition hover:bg-red-50"
+                >
+                  <LogOut size={16} />
+                  Log Out
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </header>
   );
 };
 
+<<<<<<< HEAD
 export default TopBar;
+=======
+export default TopBar;
+
+>>>>>>> dd4fb2f (New UI)

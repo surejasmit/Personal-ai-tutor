@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import { useNavigate, Link } from 'react-router-dom';
+import { ArrowRight, BarChart3, CheckCircle2, LockKeyhole, Mail, Sparkles, User } from 'lucide-react';
 
 const SignUp = () => {
   const [name, setName] = useState('');
@@ -46,142 +47,136 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-bg-primary">
+    <div className="app-bg min-h-screen">
       <Navbar />
 
-      <main className="max-w-6xl mx-auto pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          
-          {/* LEFT - Info Section */}
-          <section className="hidden lg:block space-y-6">
-            <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full
-                             border border-accent/20 bg-accent/5
-                             text-accent-light text-xs font-medium tracking-wide uppercase">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-              Free to start
-            </span>
+      <main className="mx-auto grid min-h-screen max-w-7xl items-center gap-10 px-4 pb-16 pt-28 sm:px-6 lg:grid-cols-[1fr_0.95fr] lg:px-8">
+        <section className="animate-fade-up hidden space-y-8 lg:block">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-4 py-2 text-sm font-semibold text-brand-100 backdrop-blur">
+            <Sparkles size={16} className="text-brand-300" />
+            Free to start
+          </div>
 
-            <h1 className="text-4xl lg:text-5xl font-extrabold leading-tight text-text-primary">
-              Join thousands of<br />
-              <span className="text-accent">smart learners</span>
+          <div>
+            <h1 className="max-w-2xl text-5xl font-black leading-tight tracking-tight text-white">
+              Build a sharper study routine with AI guidance.
             </h1>
-
-            <p className="text-lg text-text-secondary leading-relaxed max-w-lg">
-              Create an account to unlock personalized quizzes, track your progress,
-              and get AI-powered recommendations tailored just for you.
+            <p className="mt-5 max-w-xl text-lg leading-8 text-slate-300">
+              Create your learning profile, take topic quizzes, and unlock recommendations that adapt as you improve.
             </p>
+          </div>
 
-            <div className="pt-4 space-y-4">
-              {[
-                { icon: '🎯', text: 'Adaptive learning paths' },
-                { icon: '📊', text: 'Real-time progress tracking' },
-                { icon: '⚡', text: 'Instant feedback on every quiz' },
-              ].map((item) => (
-                <div key={item.text} className="flex items-center gap-3">
-                  <span className="text-2xl">{item.icon}</span>
-                  <span className="text-text-secondary">{item.text}</span>
-                </div>
-              ))}
+          <div className="grid max-w-xl gap-4 sm:grid-cols-3">
+            {[
+              { icon: CheckCircle2, text: 'Adaptive quizzes' },
+              { icon: BarChart3, text: 'Progress insights' },
+              { icon: Sparkles, text: 'AI next steps' },
+            ].map((item) => (
+              <div key={item.text} className="dark-card rounded-3xl p-4">
+                <item.icon size={22} className="mb-3 text-brand-300" />
+                <p className="text-sm font-semibold text-white">{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mx-auto w-full max-w-md">
+          <div className="glass-light rounded-[2rem] p-6 sm:p-8">
+            <div className="mb-7">
+              <p className="text-sm font-bold uppercase tracking-[0.22em] text-brand">Join AI Tutor</p>
+              <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-950">Create an account</h2>
+              <p className="mt-2 text-sm text-slate-500">No credit card required. Start learning in minutes.</p>
             </div>
-          </section>
 
-          {/* RIGHT - Form Section */}
-          <section className="w-full max-w-md mx-auto lg:mx-0">
-            <div className="rounded-2xl border border-border bg-bg-secondary/50 p-8">
-              <h2 className="text-2xl font-bold text-text-primary mb-2">Create an account</h2>
-              <p className="text-sm text-text-muted mb-6">
-                Sign up to get started. No credit card required.
-              </p>
+            {error && (
+              <div className="mb-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                {error}
+              </div>
+            )}
+            {success && (
+              <div className="mb-5 rounded-2xl border border-brand-200 bg-brand-50 px-4 py-3 text-sm font-medium text-brand-dark">
+                {success}
+              </div>
+            )}
 
-              {error && (
-                <div className="mb-4 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/20">
-                  <p className="text-sm text-red-400">{error}</p>
-                </div>
-              )}
-              {success && (
-                <div className="mb-4 px-4 py-3 rounded-lg bg-accent/10 border border-accent/20">
-                  <p className="text-sm text-accent-light">{success}</p>
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-text-secondary mb-2">Full name</label>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="mb-2 block text-sm font-bold text-slate-700">Full name</label>
+                <div className="relative">
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                   <input
-                    className="w-full px-4 py-2.5 rounded-lg bg-bg-primary border border-border
-                               text-text-primary placeholder:text-text-muted
-                               focus:outline-none focus:border-accent/40 transition-colors"
-                    placeholder="Enter Your Name"
+                    className="form-input py-3 pl-11 pr-4"
+                    placeholder="Enter your name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
                   />
                 </div>
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-text-secondary mb-2">Email</label>
+              <div>
+                <label className="mb-2 block text-sm font-bold text-slate-700">Email</label>
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                   <input
                     type="email"
-                    className="w-full px-4 py-2.5 rounded-lg bg-bg-primary border border-border
-                               text-text-primary placeholder:text-text-muted
-                               focus:outline-none focus:border-accent/40 transition-colors"
+                    className="form-input py-3 pl-11 pr-4"
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                   />
                 </div>
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-text-secondary mb-2">Password</label>
+              <div>
+                <label className="mb-2 block text-sm font-bold text-slate-700">Password</label>
+                <div className="relative">
+                  <LockKeyhole className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                   <input
                     type="password"
-                    className="w-full px-4 py-2.5 rounded-lg bg-bg-primary border border-border
-                               text-text-primary placeholder:text-text-muted
-                               focus:outline-none focus:border-accent/40 transition-colors"
-                    placeholder="••••••••"
+                    className="form-input py-3 pl-11 pr-4"
+                    placeholder="Create a password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                   />
                 </div>
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-text-secondary mb-2">Confirm password</label>
+              <div>
+                <label className="mb-2 block text-sm font-bold text-slate-700">Confirm password</label>
+                <div className="relative">
+                  <LockKeyhole className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                   <input
                     type="password"
-                    className="w-full px-4 py-2.5 rounded-lg bg-bg-primary border border-border
-                               text-text-primary placeholder:text-text-muted
-                               focus:outline-none focus:border-accent/40 transition-colors"
-                    placeholder="••••••••"
+                    className="form-input py-3 pl-11 pr-4"
+                    placeholder="Confirm password"
                     value={confirm}
                     onChange={(e) => setConfirm(e.target.value)}
                     required
                   />
                 </div>
+              </div>
 
-                <button
-                  className="w-full py-3 px-4 bg-accent hover:bg-accent-light text-bg-primary
-                             rounded-lg font-semibold transition-all duration-200
-                             hover:shadow-lg hover:shadow-accent/20"
-                  type="submit"
-                >
-                  Create account
-                </button>
-              </form>
+              <button className="btn-primary w-full px-4 py-3.5" type="submit">
+                Create account
+                <ArrowRight size={18} />
+              </button>
+            </form>
 
-              <p className="mt-6 text-sm text-center text-text-muted">
-                Already have an account?{' '}
-                <Link to="/login" className="text-accent hover:text-accent-light font-medium transition-colors">
-                  Sign in
-                </Link>
-              </p>
-            </div>
-          </section>
-        </div>
+            <p className="mt-7 text-center text-sm text-slate-500">
+              Already have an account?{' '}
+              <Link to="/login" className="font-bold text-brand transition hover:text-brand-deep">
+                Sign in
+              </Link>
+            </p>
+          </div>
+        </section>
       </main>
     </div>
   );
 };
 
 export default SignUp;
+

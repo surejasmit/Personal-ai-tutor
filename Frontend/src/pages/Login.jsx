@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import { useNavigate, Link } from 'react-router-dom';
+import { ArrowRight, LockKeyhole, Mail, ShieldCheck, TrendingUp, Zap } from 'lucide-react';
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,13 +35,11 @@ const Login = () => {
         return;
       }
 
-      // Save token and user data
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
 
-      // Navigate to dashboard
       navigate('/dashboard');
-    } catch (err) {
+    } catch {
       setError('Network error. Please try again.');
     } finally {
       setLoading(false);
@@ -47,120 +47,114 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-bg-primary">
+    <div className="app-bg min-h-screen">
       <Navbar />
 
-      <main className="max-w-6xl mx-auto pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <main className="mx-auto grid min-h-screen max-w-7xl items-center gap-10 px-4 pb-16 pt-28 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8">
+        <section className="animate-fade-up hidden space-y-8 lg:block">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-4 py-2 text-sm font-semibold text-brand-100 backdrop-blur">
+            <ShieldCheck size={16} className="text-brand-300" />
+            Secure student workspace
+          </div>
 
-          {/* LEFT - Info Section */}
-          <section className="hidden lg:block space-y-6">
-            <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full
-                             border border-accent/20 bg-accent/5
-                             text-accent-light text-xs font-medium tracking-wide uppercase">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-              Welcome back
-            </span>
-
-            <h1 className="text-4xl lg:text-5xl font-extrabold leading-tight text-text-primary">
-              Pick up where<br />
-              <span className="text-accent">you left off</span>
+          <div>
+            <h1 className="max-w-2xl text-5xl font-black leading-tight tracking-tight text-white">
+              Continue your personalized learning path.
             </h1>
-
-            <p className="text-lg text-text-secondary leading-relaxed max-w-lg">
-              Sign in to access your personalized dashboard, continue your learning
-              path, and track your progress in real time.
+            <p className="mt-5 max-w-xl text-lg leading-8 text-slate-300">
+              Access your dashboard, quizzes, AI recommendations, and progress insights from one polished workspace.
             </p>
+          </div>
 
-            <div className="pt-4 space-y-4">
-              {[
-                { icon: '🔒', text: 'Secure & encrypted login' },
-                { icon: '📈', text: 'Your progress saved automatically' },
-                { icon: '🚀', text: 'Jump back into learning instantly' },
-              ].map((item) => (
-                <div key={item.text} className="flex items-center gap-3">
-                  <span className="text-2xl">{item.icon}</span>
-                  <span className="text-text-secondary">{item.text}</span>
-                </div>
-              ))}
+          <div className="grid max-w-xl gap-4 sm:grid-cols-3">
+            {[
+              { icon: LockKeyhole, text: 'Encrypted login' },
+              { icon: TrendingUp, text: 'Saved progress' },
+              { icon: Zap, text: 'Fast resume' },
+            ].map((item) => (
+              <div key={item.text} className="dark-card rounded-3xl p-4">
+                <item.icon size={22} className="mb-3 text-brand-300" />
+                <p className="text-sm font-semibold text-white">{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mx-auto w-full max-w-md">
+          <div className="glass-light rounded-[2rem] p-6 sm:p-8">
+            <div className="mb-8">
+              <p className="text-sm font-bold uppercase tracking-[0.22em] text-brand">Welcome back</p>
+              <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-950">Sign in</h2>
+              <p className="mt-2 text-sm text-slate-500">Enter your credentials to continue learning.</p>
             </div>
-          </section>
 
-          {/* RIGHT - Login Form */}
-          <section className="w-full max-w-md mx-auto lg:mx-0">
-            <div className="rounded-2xl border border-border bg-bg-secondary/50 p-8">
-              <h2 className="text-2xl font-bold text-text-primary mb-2">Sign in</h2>
-              <p className="text-sm text-text-muted mb-6">
-                Enter your credentials to continue learning.
-              </p>
+            {error && (
+              <div className="mb-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                {error}
+              </div>
+            )}
 
-              {error && (
-                <div className="mb-4 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/20">
-                  <p className="text-sm text-red-400">{error}</p>
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-text-secondary mb-2">Email</label>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label className="mb-2 block text-sm font-bold text-slate-700">Email</label>
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                   <input
                     type="email"
                     id="login-email"
-                    className="w-full px-4 py-2.5 rounded-lg bg-bg-primary border border-border
-                               text-text-primary placeholder:text-text-muted
-                               focus:outline-none focus:border-accent/40 transition-colors"
+                    className="form-input py-3 pl-11 pr-4"
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                   />
                 </div>
+              </div>
 
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="text-sm font-medium text-text-secondary">Password</label>
-                    <a href="#" className="text-xs text-accent hover:text-accent-light transition-colors">
-                      Forgot password?
-                    </a>
-                  </div>
+              <div>
+                <div className="mb-2 flex items-center justify-between">
+                  <label className="text-sm font-bold text-slate-700">Password</label>
+                  <a href="#" className="text-xs font-bold text-brand transition hover:text-brand-deep">
+                    Forgot password?
+                  </a>
+                </div>
+                <div className="relative">
+                  <LockKeyhole className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                   <input
                     type="password"
                     id="login-password"
-                    className="w-full px-4 py-2.5 rounded-lg bg-bg-primary border border-border
-                               text-text-primary placeholder:text-text-muted
-                               focus:outline-none focus:border-accent/40 transition-colors"
-                    placeholder="••••••••"
+                    className="form-input py-3 pl-11 pr-4"
+                    placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                   />
                 </div>
+              </div>
 
-                <button
-                  className="w-full py-3 px-4 bg-accent hover:bg-accent-light text-bg-primary
-                             rounded-lg font-semibold transition-all duration-200
-                             hover:shadow-lg hover:shadow-accent/20
-                             disabled:opacity-50 disabled:cursor-not-allowed"
-                  type="submit"
-                  id="login-submit"
-                  disabled={loading}
-                >
-                  {loading ? 'Signing in...' : 'Sign in'}
-                </button>
-              </form>
+              <button
+                className="btn-primary w-full px-4 py-3.5 disabled:cursor-not-allowed disabled:opacity-60"
+                type="submit"
+                id="login-submit"
+                disabled={loading}
+              >
+                {loading ? 'Signing in...' : 'Sign in'}
+                {!loading && <ArrowRight size={18} />}
+              </button>
+            </form>
 
-              <p className="mt-6 text-sm text-center text-text-muted">
-                Don&apos;t have an account?{' '}
-                <Link to="/signup" className="text-accent hover:text-accent-light font-medium transition-colors">
-                  Create one
-                </Link>
-              </p>
-            </div>
-          </section>
-        </div>
+            <p className="mt-7 text-center text-sm text-slate-500">
+              Don&apos;t have an account?{' '}
+              <Link to="/signup" className="font-bold text-brand transition hover:text-brand-deep">
+                Create one
+              </Link>
+            </p>
+          </div>
+        </section>
       </main>
     </div>
   );
 };
 
 export default Login;
+

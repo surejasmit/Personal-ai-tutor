@@ -454,7 +454,7 @@
   background: var(--bg-card-hover);
   border-color: var(--border-glow);
   transform: translateY(-6px);
-  box-shadow: var(--shadow-glow);
+  box-shadow: var(--shadow-lift);
 }
 
 .feature-card:hover::before {
@@ -817,3 +817,4 @@
   opacity: 1;
   transform: translateY(0);
 }
+

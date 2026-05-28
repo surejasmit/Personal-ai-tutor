@@ -1,18 +1,16 @@
 const StatsCard = ({ icon: Icon, title, value, change, changeLabel, iconBg, iconColor }) => {
   return (
-    <div className="bg-[#1a1f2e] rounded-xl p-6 border border-white/5 hover:border-white/10 transition-all">
-      <div className="flex items-start justify-between">
-        {/* Left Side - Text Content */}
-        <div>
-          <p className="text-gray-400 text-sm mb-2">{title}</p>
-          <h3 className="text-3xl font-bold mb-2">{value}</h3>
-          <p className="text-emerald-400 text-sm font-medium">
-            {change} {changeLabel}
+    <div className="premium-card group rounded-3xl p-5 transition duration-300 hover:-translate-y-1 hover:shadow-lift">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-slate-500">{title}</p>
+          <h3 className="mt-2 text-3xl font-black tracking-tight text-slate-950">{value}</h3>
+          <p className="mt-2 text-sm font-bold text-brand">
+            {change} <span className="font-medium text-slate-500">{changeLabel}</span>
           </p>
         </div>
 
-        {/* Right Side - Icon */}
-        <div className={`w-12 h-12 ${iconBg} rounded-lg flex items-center justify-center`}>
+        <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${iconBg}`}>
           <Icon size={24} className={iconColor} />
         </div>
       </div>
@@ -21,3 +19,4 @@ const StatsCard = ({ icon: Icon, title, value, change, changeLabel, iconBg, icon
 };
 
 export default StatsCard;
+

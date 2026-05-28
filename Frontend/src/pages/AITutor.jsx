@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bot, Sparkles, BookOpen, Target, ArrowRight, RefreshCw, AlertCircle } from 'lucide-react';
+import { Bot, Sparkles, BookOpen, Target, ArrowRight, RefreshCw, AlertCircle, MessageSquareText } from 'lucide-react';
 import Sidebar from '../components/Dashboard/Sidebar';
 import TopBar from '../components/Dashboard/Topbar';
 
@@ -133,33 +133,33 @@ const AITutor = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#0a0e1a] text-white">
+    <div className="flex min-h-screen page-shell">
       <Sidebar />
 
-      <div className="flex-1 ml-56">
+      <div className="min-w-0 flex-1 pb-24 md:ml-64 md:pb-0">
         <TopBar userName={userName} />
 
-        <main className="p-8 space-y-8">
-          <section className="bg-[#1a1f2e] border border-white/5 rounded-2xl p-8">
-            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+        <main className="space-y-6 p-4 sm:p-6 lg:p-8">
+          <section className="brand-gradient rounded-[2rem] p-6 text-white shadow-lift sm:p-8">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-2xl">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-sm font-medium mb-4">
+                <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/14 px-3 py-1.5 text-sm font-bold">
                   <Bot size={16} />
                   AI Tutor
                 </div>
 
-                <h1 className="text-3xl md:text-4xl font-bold leading-tight">
-                  Welcome back, <span className="text-emerald-400">{userName || 'Student'}</span>
+                <h1 className="text-3xl font-black leading-tight tracking-tight md:text-4xl">
+                  Welcome back, {userName || 'Student'}
                 </h1>
-                <p className="mt-3 text-gray-400 text-base md:text-lg max-w-xl">
-                  Your AI tutor uses your quiz performance to recommend what to study next and helps you build a focused learning routine.
+                <p className="mt-3 max-w-xl text-sm leading-6 text-brand-50/86 md:text-base">
+                  Your AI tutor uses quiz performance to recommend what to study next and keep your routine focused.
                 </p>
 
                 <div className="mt-6 flex flex-wrap gap-3">
                   <button
                     type="button"
                     onClick={() => navigate('/topics')}
-                    className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-emerald-500 text-black font-semibold hover:bg-emerald-400 transition-colors"
+                    className="inline-flex items-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-extrabold text-brand-dark shadow-lg transition hover:-translate-y-1"
                   >
                     Start a Quiz
                     <ArrowRight size={18} />
@@ -169,70 +169,71 @@ const AITutor = () => {
                     type="button"
                     onClick={handleRefresh}
                     disabled={refreshing}
-                    className="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-white/10 text-gray-200 hover:bg-white/5 transition-colors disabled:opacity-50"
+                    className="inline-flex items-center gap-2 rounded-2xl border border-white/18 bg-white/10 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-1 hover:bg-white/16 disabled:opacity-60"
                   >
                     <RefreshCw size={18} className={refreshing ? 'animate-spin' : ''} />
-                    {refreshing ? 'Refreshing...' : 'Refresh Recommendation'}
+                    {refreshing ? 'Refreshing...' : 'Refresh'}
                   </button>
                 </div>
               </div>
 
-              <div className="w-full lg:w-80 bg-[#0f1419] border border-white/5 rounded-2xl p-5">
-                <p className="text-sm text-gray-400 mb-2">Today's focus</p>
-                <h2 className="text-xl font-bold mb-3">Study smarter, not longer</h2>
-                <p className="text-sm text-gray-300 leading-relaxed">
-                  The tutor highlights a next step based on your current progress and recent quiz activity.
+              <div className="dark-card w-full rounded-[1.7rem] p-5 lg:w-80">
+                <p className="text-sm font-bold text-brand-200">Today's focus</p>
+                <h2 className="mt-2 text-xl font-black text-white">Study smarter, not longer</h2>
+                <p className="mt-3 text-sm leading-6 text-slate-300">
+                  The tutor highlights a next step based on current progress and recent quiz activity.
                 </p>
               </div>
             </div>
           </section>
 
           {error && (
-            <div className="flex items-start gap-3 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-red-300">
+            <div className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-red-600">
               <AlertCircle size={18} className="mt-0.5" />
-              <p className="text-sm">{error}</p>
+              <p className="text-sm font-semibold">{error}</p>
             </div>
           )}
 
-          <section className="grid gap-6 lg:grid-cols-3">
+          <section className="grid gap-5 lg:grid-cols-3">
             {promptCards.map((card) => {
               const Icon = card.icon;
               return (
-                <div key={card.title} className="bg-[#1a1f2e] border border-white/5 rounded-xl p-6">
-                  <div className="w-11 h-11 rounded-lg bg-emerald-500/10 flex items-center justify-center mb-4">
-                    <Icon size={22} className="text-emerald-400" />
+                <div key={card.title} className="premium-card rounded-[1.7rem] p-6 transition hover:-translate-y-1 hover:shadow-lift">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-100 text-brand-dark">
+                    <Icon size={22} />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">{card.title}</h3>
-                  <p className="text-sm text-gray-400">{card.description}</p>
+                  <h3 className="text-lg font-black text-slate-950">{card.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-500">{card.description}</p>
                 </div>
               );
             })}
           </section>
 
-          <section className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
-            <div className="bg-[#1a1f2e] border border-white/5 rounded-2xl p-6">
-              <div className="flex items-center justify-between gap-4 mb-5">
+          <section className="grid gap-5 xl:grid-cols-[1.5fr_1fr]">
+            <div className="premium-card rounded-[2rem] p-6">
+              <div className="mb-5 flex items-center justify-between gap-4">
                 <div>
-                  <h2 className="text-xl font-bold">Personalized Recommendation</h2>
-                  <p className="text-sm text-gray-400 mt-1">
-                    Based on your latest quiz activity
-                  </p>
+                  <h2 className="text-xl font-black text-slate-950">Personalized Recommendation</h2>
+                  <p className="mt-1 text-sm text-slate-500">Based on your latest quiz activity</p>
                 </div>
-                <Sparkles className="text-emerald-400" size={22} />
+                <Sparkles className="text-brand" size={22} />
               </div>
 
               {loading ? (
-                <p className="text-gray-400 text-sm">Loading your recommendation...</p>
+                <div className="space-y-4">
+                  <div className="skeleton h-32 rounded-3xl" />
+                  <div className="skeleton h-12 rounded-2xl" />
+                </div>
               ) : recommendation?.hasRecommendation ? (
                 <div className="space-y-4">
-                  <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-5">
-                    <p className="text-xs uppercase tracking-[0.2em] text-emerald-400 mb-2">
+                  <div className="rounded-3xl border border-brand-200 bg-brand-50 p-5">
+                    <p className="mb-2 text-xs font-black uppercase tracking-[0.22em] text-brand">
                       Recommended next topic
                     </p>
-                    <h3 className="text-2xl font-bold text-white">
+                    <h3 className="text-2xl font-black text-slate-950">
                       {recommendation.recommendation.recommended_topic}
                     </h3>
-                    <p className="mt-3 text-sm text-gray-300 leading-relaxed">
+                    <p className="mt-3 text-sm leading-6 text-slate-600">
                       {recommendation.recommendation.recommendation_reason}
                     </p>
                   </div>
@@ -241,29 +242,29 @@ const AITutor = () => {
                     <button
                       type="button"
                       onClick={() => navigate('/topics')}
-                      className="px-5 py-3 rounded-lg bg-emerald-500 text-black font-semibold hover:bg-emerald-400 transition-colors"
+                      className="btn-primary px-5 py-3"
                     >
                       Continue Learning
                     </button>
                     <button
                       type="button"
                       onClick={() => navigate('/dashboard')}
-                      className="px-5 py-3 rounded-lg border border-white/10 text-gray-200 hover:bg-white/5 transition-colors"
+                      className="btn-secondary px-5 py-3 text-sm text-slate-700"
                     >
                       View Dashboard
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="rounded-xl border border-white/10 bg-[#0f1419] p-5">
-                  <h3 className="text-lg font-semibold mb-2">No recommendation yet</h3>
-                  <p className="text-sm text-gray-400 leading-relaxed">
+                <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
+                  <h3 className="text-lg font-black text-slate-950">No recommendation yet</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-500">
                     Take a quiz to unlock your first personalized AI recommendation.
                   </p>
                   <button
                     type="button"
                     onClick={() => navigate('/topics')}
-                    className="mt-4 px-5 py-3 rounded-lg bg-emerald-500 text-black font-semibold hover:bg-emerald-400 transition-colors"
+                    className="btn-primary mt-4 px-5 py-3"
                   >
                     Choose a Topic
                   </button>
@@ -271,17 +272,20 @@ const AITutor = () => {
               )}
             </div>
 
-            <div className="bg-[#1a1f2e] border border-white/5 rounded-2xl p-6">
-              <h2 className="text-xl font-bold mb-4">Quick Prompts</h2>
+            <div className="premium-card rounded-[2rem] p-6">
+              <div className="mb-4 flex items-center gap-2">
+                <MessageSquareText size={21} className="text-brand" />
+                <h2 className="text-xl font-black text-slate-950">Quick Prompts</h2>
+              </div>
               <div className="space-y-3">
                 {quickPrompts.map((prompt) => (
                   <button
                     key={prompt}
                     type="button"
                     onClick={() => handleQuickPrompt(prompt)}
-                    className="w-full text-left px-4 py-3 rounded-lg border border-white/10 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-colors"
+                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-deep"
                   >
-                    <span className="text-sm text-gray-200">{prompt}</span>
+                    {prompt}
                   </button>
                 ))}
               </div>
@@ -294,3 +298,4 @@ const AITutor = () => {
 };
 
 export default AITutor;
+

@@ -1,93 +1,79 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-
+import { GraduationCap, Menu, X, ArrowRight } from 'lucide-react';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navLinks = ['Home', 'Features', 'About', 'Contact'];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass">
-      {/* 
-        BUG FIX: Your line 13 had:  <div max-w ="7xl" mx-auto px-4 sm:px-6 lg:px-8>
-        In JSX, ALL classes must go inside className="..."
-        Correct version below:
-      */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-
-          {/* LOGO */}
-          <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
-              <span className="text-white text-sm font-bold">AT</span>
+    <nav className="fixed left-0 right-0 top-0 z-50 border-b border-border-soft bg-white/88 backdrop-blur-2xl">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          <Link to="/" className="flex items-center gap-3">
+            <div className="brand-gradient flex h-9 w-9 items-center justify-center rounded-xl shadow-lift">
+              <GraduationCap size={20} className="text-white" />
             </div>
-            <span className="text-lg font-bold text-text-primary">
+            <span className="text-base font-extrabold tracking-tight text-text-primary sm:text-lg">
               AI Tutor
             </span>
           </Link>
 
-          {/* DESKTOP NAV LINKS */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden items-center rounded-full border border-border-soft bg-app-bg p-1 md:flex">
             {navLinks.map((item) => (
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
-                className="px-4 py-2 text-sm font-medium text-text-secondary
-                           rounded-lg transition-all duration-200
-                           hover:text-text-primary hover:bg-white/5"
+                className="rounded-full px-4 py-2 text-sm font-semibold text-text-secondary transition hover:bg-white hover:text-brand-dark hover:shadow-sm"
               >
                 {item}
               </a>
             ))}
           </div>
 
-          {/* DESKTOP AUTH BUTTONS */}
-          <div className="hidden md:flex items-center gap-3">
-            <Link to="/login" className="px-5 py-2 text-sm font-medium text-text-secondary
-                               rounded-lg border border-border
-                               transition-all duration-200
-                               hover:text-text-primary hover:border-border-hover">
+          <div className="hidden items-center gap-3 md:flex">
+            <Link
+              to="/login"
+              className="rounded-xl px-4 py-2 text-sm font-bold text-text-secondary transition hover:bg-brand-50 hover:text-brand-dark"
+            >
               Login
             </Link>
-            <Link to="/signup" className="px-5 py-2 text-sm font-semibold text-bg-primary
-                               rounded-lg bg-accent
-                               transition-all duration-200
-                               hover:bg-accent-light">
+            <Link to="/signup" className="btn-primary px-4 py-2 text-sm">
               Sign Up
+              <ArrowRight size={16} />
             </Link>
           </div>
 
-          {/* MOBILE HAMBURGER */}
           <button
-            className="md:hidden p-2 text-text-secondary hover:text-text-primary"
+            type="button"
+            aria-label="Toggle menu"
+            className="rounded-xl border border-border-soft p-2 text-text-primary transition hover:bg-brand-50 md:hidden"
             onClick={() => setMenuOpen(!menuOpen)}
           >
-            {menuOpen ? '✕' : '☰'}
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
 
-      {/* MOBILE MENU */}
       {menuOpen && (
-        <div className="md:hidden px-4 pb-4 border-t border-border bg-bg-primary/95 backdrop-blur-xl">
-          {navLinks.map((item) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase()}`}
-              onClick={() => setMenuOpen(false)}
-              className="block px-4 py-3 text-sm text-text-secondary
-                         hover:text-text-primary transition-colors"
-            >
-              {item}
-            </a>
-          ))}
-          <div className="pt-3 flex flex-col gap-2">
-            <Link to="/login" className="w-full py-2.5 text-sm text-text-secondary text-center
-                               rounded-lg border border-border">
+        <div className="border-t border-border-soft bg-white/96 px-4 pb-5 pt-3 backdrop-blur-2xl md:hidden">
+          <div className="space-y-1">
+            {navLinks.map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                onClick={() => setMenuOpen(false)}
+                className="block rounded-xl px-4 py-3 text-sm font-semibold text-text-secondary transition hover:bg-brand-50 hover:text-brand-dark"
+              >
+                {item}
+              </a>
+            ))}
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <Link to="/login" className="btn-secondary px-4 py-3 text-center text-sm">
               Login
             </Link>
-            <Link to="/signup" className="w-full py-2.5 text-sm font-semibold text-bg-primary text-center
-                               rounded-lg bg-accent">
+            <Link to="/signup" className="btn-primary px-4 py-3 text-sm">
               Sign Up
             </Link>
           </div>

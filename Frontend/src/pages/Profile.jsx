@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { LockKeyhole, Mail, Save, User, UserRoundCog } from 'lucide-react';
 import Sidebar from '../components/Dashboard/Sidebar';
 import TopBar from '../components/Dashboard/Topbar';
-  
+
 const Profile = () => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState('');
@@ -153,108 +154,122 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#0a0e1a] text-white">
+    <div className="flex min-h-screen page-shell">
       <Sidebar />
 
-      <div className="flex-1 ml-56">
+      <div className="min-w-0 flex-1 pb-24 md:ml-64 md:pb-0">
         <TopBar userName={userName} />
 
-        <main className="p-8 max-w-5xl">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Profile Settings</h1>
-            <p className="text-gray-400">View and update your account information.</p>
-          </div>
+        <main className="max-w-6xl space-y-6 p-4 sm:p-6 lg:p-8">
+          <section className="brand-gradient rounded-[2rem] p-6 text-white shadow-lift sm:p-8">
+            <div className="flex items-center gap-4">
+              <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-white/16 text-2xl font-black">
+                {userName ? userName.charAt(0).toUpperCase() : 'U'}
+              </div>
+              <div>
+                <p className="text-sm font-bold uppercase tracking-[0.22em] text-brand-100">Account</p>
+                <h1 className="mt-2 text-3xl font-black tracking-tight">Profile Settings</h1>
+                <p className="mt-2 text-sm text-brand-50/86">View and update your account information.</p>
+              </div>
+            </div>
+          </section>
 
           {loading ? (
-            <div className="bg-[#1a1f2e] border border-white/5 rounded-xl p-6 text-gray-400">
-              Loading profile...
+            <div className="premium-card rounded-[2rem] p-6">
+              <div className="skeleton mb-4 h-6 rounded-full" />
+              <div className="skeleton h-48 rounded-3xl" />
             </div>
           ) : (
             <>
               {(message || error) && (
                 <div
-                  className={`mb-6 px-4 py-3 rounded-lg border ${
+                  className={`rounded-2xl border px-4 py-3 text-sm font-semibold ${
                     error
-                      ? 'bg-red-500/10 border-red-500/20 text-red-300'
-                      : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'
+                      ? 'border-red-200 bg-red-50 text-red-600'
+                      : 'border-brand-200 bg-brand-50 text-brand-dark'
                   }`}
                 >
                   {error || message}
                 </div>
               )}
 
-              <div className="bg-[#1a1f2e] border border-white/5 rounded-xl overflow-hidden">
-                <div className="flex border-b border-white/5">
+              <section className="premium-card overflow-hidden rounded-[2rem]">
+                <div className="flex border-b border-slate-100 bg-slate-50/70 p-2">
                   <button
                     type="button"
                     onClick={() => setActiveTab('profile')}
-                    className={`px-6 py-4 text-sm font-medium transition-colors ${
+                    className={`flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition ${
                       activeTab === 'profile'
-                        ? 'text-emerald-400 border-b-2 border-emerald-400'
-                        : 'text-gray-400 hover:text-white'
+                        ? 'bg-white text-brand-dark shadow-sm'
+                        : 'text-slate-500 hover:text-slate-900'
                     }`}
                   >
+                    <UserRoundCog size={17} />
                     Edit Profile
                   </button>
                   <button
                     type="button"
                     onClick={() => setActiveTab('password')}
-                    className={`px-6 py-4 text-sm font-medium transition-colors ${
+                    className={`flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition ${
                       activeTab === 'password'
-                        ? 'text-emerald-400 border-b-2 border-emerald-400'
-                        : 'text-gray-400 hover:text-white'
+                        ? 'bg-white text-brand-dark shadow-sm'
+                        : 'text-slate-500 hover:text-slate-900'
                     }`}
                   >
+                    <LockKeyhole size={17} />
                     Change Password
                   </button>
                 </div>
 
-                <div className="p-6">
+                <div className="p-5 sm:p-7">
                   {activeTab === 'profile' && (
-                    <form onSubmit={handleProfileSubmit} className="space-y-5 max-w-xl">
+                    <form onSubmit={handleProfileSubmit} className="max-w-xl space-y-5">
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                          Full Name
-                        </label>
-                        <input
-                          type="text"
-                          value={profileForm.name}
-                          onChange={(e) =>
-                            setProfileForm({ ...profileForm, name: e.target.value })
-                          }
-                          className="w-full px-4 py-3 rounded-lg bg-[#0f1419] border border-white/10 text-white outline-none focus:border-emerald-400"
-                          placeholder="Your name"
-                        />
+                        <label className="mb-2 block text-sm font-bold text-slate-700">Full Name</label>
+                        <div className="relative">
+                          <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                          <input
+                            type="text"
+                            value={profileForm.name}
+                            onChange={(e) =>
+                              setProfileForm({ ...profileForm, name: e.target.value })
+                            }
+                            className="form-input py-3 pl-11 pr-4"
+                            placeholder="Your name"
+                          />
+                        </div>
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                          Email Address
-                        </label>
-                        <input
-                          type="email"
-                          value={profileForm.email}
-                          onChange={(e) =>
-                            setProfileForm({ ...profileForm, email: e.target.value })
-                          }
-                          className="w-full px-4 py-3 rounded-lg bg-[#0f1419] border border-white/10 text-white outline-none focus:border-emerald-400"
-                          placeholder="Your email"
-                        />
+                        <label className="mb-2 block text-sm font-bold text-slate-700">Email Address</label>
+                        <div className="relative">
+                          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                          <input
+                            type="email"
+                            value={profileForm.email}
+                            onChange={(e) =>
+                              setProfileForm({ ...profileForm, email: e.target.value })
+                            }
+                            className="form-input py-3 pl-11 pr-4"
+                            placeholder="Your email"
+                          />
+                        </div>
                       </div>
 
-                      <div className="pt-2 flex items-center gap-3">
+                      <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center">
                         <button
                           type="submit"
                           disabled={savingProfile}
-                          className="px-5 py-3 rounded-lg bg-emerald-500 text-black font-semibold hover:bg-emerald-400 transition-colors disabled:opacity-50"
+                          className="btn-primary px-5 py-3 disabled:cursor-not-allowed disabled:opacity-60"
                         >
+                          <Save size={18} />
                           {savingProfile ? 'Saving...' : 'Save Changes'}
                         </button>
 
                         <button
                           type="button"
                           onClick={() => navigate('/dashboard')}
-                          className="px-5 py-3 rounded-lg border border-white/10 text-gray-300 hover:bg-white/5 transition-colors"
+                          className="btn-secondary px-5 py-3 text-sm text-slate-700"
                         >
                           Back to Dashboard
                         </button>
@@ -263,77 +278,55 @@ const Profile = () => {
                   )}
 
                   {activeTab === 'password' && (
-                    <form onSubmit={handlePasswordSubmit} className="space-y-5 max-w-xl">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                          Current Password
-                        </label>
-                        <input
-                          type="password"
-                          value={passwordForm.currentPassword}
-                          onChange={(e) =>
-                            setPasswordForm({ ...passwordForm, currentPassword: e.target.value })
-                          }
-                          className="w-full px-4 py-3 rounded-lg bg-[#0f1419] border border-white/10 text-white outline-none focus:border-emerald-400"
-                          placeholder="Current password"
-                        />
-                      </div>
+                    <form onSubmit={handlePasswordSubmit} className="max-w-xl space-y-5">
+                      {[
+                        ['Current Password', 'currentPassword', 'Current password'],
+                        ['New Password', 'newPassword', 'New password'],
+                        ['Confirm New Password', 'confirmPassword', 'Confirm new password'],
+                      ].map(([label, key, placeholder]) => (
+                        <div key={key}>
+                          <label className="mb-2 block text-sm font-bold text-slate-700">{label}</label>
+                          <div className="relative">
+                            <LockKeyhole className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                            <input
+                              type="password"
+                              value={passwordForm[key]}
+                              onChange={(e) =>
+                                setPasswordForm({ ...passwordForm, [key]: e.target.value })
+                              }
+                              className="form-input py-3 pl-11 pr-4"
+                              placeholder={placeholder}
+                            />
+                          </div>
+                        </div>
+                      ))}
 
-                      <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                          New Password
-                        </label>
-                        <input
-                          type="password"
-                          value={passwordForm.newPassword}
-                          onChange={(e) =>
-                            setPasswordForm({ ...passwordForm, newPassword: e.target.value })
-                          }
-                          className="w-full px-4 py-3 rounded-lg bg-[#0f1419] border border-white/10 text-white outline-none focus:border-emerald-400"
-                          placeholder="New password"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                          Confirm New Password
-                        </label>
-                        <input
-                          type="password"
-                          value={passwordForm.confirmPassword}
-                          onChange={(e) =>
-                            setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })
-                          }
-                          className="w-full px-4 py-3 rounded-lg bg-[#0f1419] border border-white/10 text-white outline-none focus:border-emerald-400"
-                          placeholder="Confirm new password"
-                        />
-                      </div>
-
-                      <div className="pt-2 flex items-center gap-3">
-                        <button
-                          type="submit"
-                          disabled={savingPassword}
-                          className="px-5 py-3 rounded-lg bg-emerald-500 text-black font-semibold hover:bg-emerald-400 transition-colors disabled:opacity-50"
-                        >
-                          {savingPassword ? 'Changing...' : 'Change Password'}
-                        </button>
-                      </div>
+                      <button
+                        type="submit"
+                        disabled={savingPassword}
+                        className="btn-primary px-5 py-3 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        <LockKeyhole size={18} />
+                        {savingPassword ? 'Changing...' : 'Change Password'}
+                      </button>
                     </form>
                   )}
                 </div>
-              </div>
+              </section>
 
-              <div className="mt-6 bg-[#1a1f2e] border border-white/5 rounded-xl p-6">
-                <h2 className="text-lg font-semibold mb-3">Current Account Info</h2>
-                <div className="space-y-2 text-sm text-gray-300">
-                  <p>
-                    <span className="text-gray-500">Name:</span> {userName || 'N/A'}
+              <section className="premium-card rounded-[2rem] p-6">
+                <h2 className="text-lg font-black text-slate-950">Current Account Info</h2>
+                <div className="mt-4 grid gap-3 text-sm text-slate-600 sm:grid-cols-2">
+                  <p className="rounded-2xl bg-slate-50 p-4">
+                    <span className="block text-xs font-bold uppercase tracking-wide text-slate-400">Name</span>
+                    {userName || 'N/A'}
                   </p>
-                  <p>
-                    <span className="text-gray-500">Email:</span> {userEmail || 'N/A'}
+                  <p className="rounded-2xl bg-slate-50 p-4">
+                    <span className="block text-xs font-bold uppercase tracking-wide text-slate-400">Email</span>
+                    {userEmail || 'N/A'}
                   </p>
                 </div>
-              </div>
+              </section>
             </>
           )}
         </main>
@@ -343,3 +336,4 @@ const Profile = () => {
 };
 
 export default Profile;
+
