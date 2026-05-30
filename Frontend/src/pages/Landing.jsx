@@ -1,5 +1,5 @@
 import Navbar from '../components/Navbar';
- 
+import { Link } from 'react-router-dom';
 // ─────────────────────────────────────────────
 // HERO SECTION
 // ─────────────────────────────────────────────
@@ -31,11 +31,13 @@ const HeroSection = () => (
           </p>
 
           <div className="flex flex-wrap gap-3 pt-2">
+            <Link to="/signup">
             <button className="px-7 py-3 text-sm font-semibold text-bg-primary rounded-lg
                                bg-accent transition-all duration-200
                                hover:bg-accent-light hover:shadow-lg hover:shadow-accent/20">
               Start Learning — Free
             </button>
+            </Link>
             <button className="px-7 py-3 text-sm font-medium text-text-secondary rounded-lg
                                border border-border transition-all duration-200
                                hover:text-text-primary hover:border-border-hover">
@@ -242,11 +244,13 @@ const CTASection = () => (
           Join thousands of students who stopped guessing and started growing.
           No credit card. No commitment.
         </p>
-        <button className="px-8 py-3.5 text-sm font-semibold text-bg-primary rounded-lg
-                           bg-accent transition-all duration-200
-                           hover:bg-accent-light hover:shadow-lg hover:shadow-accent/20">
-          Create Free Account →
-        </button>
+        <Link to="/signup">
+          <button className="px-8 py-3.5 text-sm font-semibold text-bg-primary rounded-lg
+                             bg-accent transition-all duration-200
+                             hover:bg-accent-light hover:shadow-lg hover:shadow-accent/20">
+            Create Free Account →
+          </button>
+        </Link>
       </div>
     </div>
   </section>
