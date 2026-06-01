@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('./confing/db');
+const pool = require('../config/db');
 
 router.get('/skill-reader/:UserId',async (req, res) => {
     try{
@@ -108,6 +108,90 @@ router.get('/weekly-comparison/:userId',async (req, res) => {
         console.error('Weekly comparison error:', err);
         res.json(500).json({error: 'Internal server error'});
     }
-
-
 });
+// GET /api/progress/topic-journey/:userId
+// Returns: quiz score history grouped by topic
+router.get('/topic-journey/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        const result = await pool.query(
+            `SELECT 
+                t.topic_name,
+                qr.percentage,
+                qr.created_at,
+                qr.time_taken,
+                qr.correct_answers,
+                qr.total_questions
+             FROM quiz_results qr
+             JOIN topics t ON t.id = qr.topic_id
+             WHERE qr.user_id = $1
+             ORDER BY t.topic_name ASC, qr.created_at ASC`,
+            [userId]
+        );
+
+        // Group results by topic_name
+        const grouped = {};
+        result.rows.forEach(row => {
+            if (!grouped[row.topic_name]) {
+                grouped[row.topic_name] = [];
+            }
+            grouped[row.topic_name].push({
+                percentage: row.percentage,
+                date: row.created_at,
+                timeTaken: row.time_taken,
+                correctAnswers: row.correct_answers,
+                totalQuestions: row.total_questions
+            });
+        });
+
+        // Convert to array format
+        const journey = Object.keys(grouped).map(topicName => ({
+            topic: topicName,
+            attempts: grouped[topicName]
+        }));
+
+        res.json({ journey });
+
+    } catch (error) {
+        console.error('Topic journey error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// GET /api/progress/timeline/:userId
+// Returns: chronological feed of quiz activity
+router.get('/timeline/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        const result = await pool.query(
+            `SELECT 
+                qr.id,
+                t.topic_name,
+                qr.percentage,
+                qr.score,
+                qr.total_questions,
+                qr.correct_answers,
+                qr.wrong_answers,
+                qr.time_taken,
+                qr.created_at
+             FROM quiz_results qr
+             JOIN topics t ON t.id = qr.topic_id
+             WHERE qr.user_id = $1
+             ORDER BY qr.created_at DESC
+             LIMIT 20`,
+            [userId]
+        );
+
+        res.json({
+            timeline: result.rows   // Most recent 20 quiz attempts
+        });
+
+    } catch (error) {
+        console.error('Timeline error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+module.exports = router;

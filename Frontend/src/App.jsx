@@ -7,6 +7,7 @@ import TopicSelection from './pages/Topicselection';
 import QuizPage from './pages/Quizpage';
 import Profile from './pages/Profile';
 import AITutor from './pages/AITutor';
+import MyProgress from './pages/MyProgress';
 function App() {
   return (
     <BrowserRouter>
@@ -19,6 +20,7 @@ function App() {
           <Route path="/quiz/:topicId" element={<QuizPage />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/ai-tutor" element={<AITutor />} />
+          <Route path="/progress" element={<MyProgress />} />
           <Route path="*" element={<h1>404 Not Found</h1>} />
           
       </Routes>
