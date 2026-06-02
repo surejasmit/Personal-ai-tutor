@@ -110,7 +110,7 @@ def create_target_variable(df,topics_df):
     
     # Add the new column to the DataFrame
     df["recommended_topic"] = recommended_topics
-    print("✅ Target labels (recommended_topic) created successfully!")
+    print("Target labels (recommended_topic) created successfully!")
     return df
 
 def train_model(df):
@@ -119,43 +119,45 @@ def train_model(df):
     x = df[Feature]
     
     label_encoder = LabelEncoder()    
-    print(f"\n📊 Dataset Summary:")
+    # Encode the target variable
+    y = label_encoder.fit_transform(df['recommended_topic'])
+
+    print(f"\nDataset Summary:")
     print(f"   Total samples: {len(x)}")
     print(f"   Features: {Feature}")
     print(f"   Unique recommended topics: {len(label_encoder.classes_)}")
     print(f"   Topic labels: {list(label_encoder.classes_)}")
     
-    # Encode the target variable
-    
-    y = label_encoder.fit_transform(df['recommended_topic'])
-    
-    if(x<10):
-        print("\n⚠️  Very few samples! Using all data for training (no test split).")
+    if len(x) < 10:
+        print("\nVery few samples! Using all data for training (no test split).")
         X_train, X_test = x, x
         y_train, y_test = y, y
     else:
         X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
-        print(f"\n📊 Train/Test Split:")
+        print(f"\nTrain/Test Split:")
         print(f"   Training samples: {len(X_train)}")
         print(f"   Testing samples: {len(X_test)}")
         
     
     model = RandomForestClassifier(n_estimators=100, random_state=42,max_depth=10)
-    print("\n🏋️ Training RandomForestClassifier...")
+    print("\nTraining RandomForestClassifier...")
     model.fit(X_train, y_train)
-    print("✅ Model trained successfully!")
+    print("Model trained successfully!")
     
     y_pred = model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
     print("Model accuracy: {:.2f}%".format(accuracy * 100))
     
     if len(x) >= 10:
-        print("\n📋 Classification Report:")
-        print(classification_report(
-            y_test, y_pred,
-            target_names=label_encoder.classes_,
-            zero_division=0
-        ))
+        try:
+            print("\nClassification Report:")
+            print(classification_report(
+                y_test, y_pred,
+                target_names=label_encoder.classes_,
+                zero_division=0
+            ))
+        except Exception as e:
+            print(f"Could not generate classification report: {e}")
     
     return model, label_encoder
 
@@ -167,8 +169,8 @@ def save_model(model, label_encoder):
     joblib.dump(model, model_path)
     joblib.dump(label_encoder, label_encoder_path)
 
-    print(f"\n💾 Model saved to: {model_path}")
-    print(f"💾 Label encoder saved to: {label_encoder_path}")
+    print(f"\nModel saved to: {model_path}")
+    print(f"Label encoder saved to: {label_encoder_path}")
 
 
 def generate_sample_data(conn):
@@ -183,7 +185,7 @@ def generate_sample_data(conn):
     count = cursor.fetchone()[0]
     
     if count > 0:
-        print(f"📊 Database already has {count} quiz result(s). Skipping sample data.")
+        print(f"Database already has {count} quiz result(s). Skipping sample data.")
         return False
     
     # Check how many topics exist
@@ -191,7 +193,7 @@ def generate_sample_data(conn):
     topic_count = cursor.fetchone()[0]
     
     if topic_count == 0:
-        print("❌ No topics found in the database! Please add topics first.")
+        print("No topics found in the database! Please add topics first.")
         return False
     
     # Get all topic IDs
@@ -203,12 +205,12 @@ def generate_sample_data(conn):
     user_row = cursor.fetchone()
     
     if user_row is None:
-        print("❌ No users found in the database! Please register a user first.")
+        print("No users found in the database! Please register a user first.")
         return False
     
     user_id = user_row[0]
     
-    print(f"\n📝 Generating sample quiz results for user_id={user_id}...")
+    print(f"\nGenerating sample quiz results for user_id={user_id}...")
     
     # Sample quiz results with different performance levels
     import random
@@ -249,7 +251,7 @@ def generate_sample_data(conn):
         cursor.execute(insert_query_pg, data)
     
     conn.commit()
-    print(f"✅ Inserted {len(sample_data)} sample quiz results into the database!")
+    print(f"Inserted {len(sample_data)} sample quiz results into the database!")
     return True
 
 # ===================================================
@@ -258,7 +260,7 @@ def generate_sample_data(conn):
 
 if __name__ == "__main__":
     print("=" * 60)
-    print("  🎓 Personalized AI Tutor — Model Training Script")
+    print("   Personalized AI Tutor - Model Training Script")
     print("=" * 60)
     
 
@@ -268,13 +270,13 @@ try:
     generate_sample_data(conn)
     topics_df = get_all_topic(conn)
     if len(topics_df) < 2:
-            print("❌ Need at least 2 topics in the database for recommendations!")
+            print("Need at least 2 topics in the database for recommendations!")
             sys.exit(1)
             
     
-    df = fetch_quiz_data()
+    df = fetch_quiz_data(conn)
     if len(df) == 0:
-        print("❌ No quiz results found! Take some quizzes first, or the")
+        print("No quiz results found! Take some quizzes first, or the")
         print("sample data generator will create fake data on next run.")
         sys.exit(1)
     
@@ -285,10 +287,10 @@ try:
     save_model(model, label_encoder)
     
     print("\n" + "=" * 60)
-    print("  ✅ Training complete! You can now use predict_recommendation.py")
+    print("  Training complete! You can now use predict_recommendation.py")
     print("=" * 60)
 
 finally:
     # Always close the database connection
     conn.close()
-    print("\n🔒 Database connection closed.")
+    print("\nDatabase connection closed.")

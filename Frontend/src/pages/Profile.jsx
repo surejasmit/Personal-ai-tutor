@@ -153,7 +153,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#0a0e1a] text-white">
+    <div className="flex min-h-screen bg-bg-primary text-text-primary">
       <Sidebar />
 
       <div className="flex-1 ml-56">
@@ -161,37 +161,37 @@ const Profile = () => {
 
         <main className="p-8 max-w-5xl">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Profile Settings</h1>
-            <p className="text-gray-400">View and update your account information.</p>
+            <h1 className="text-2xl font-bold mb-1">Profile Settings</h1>
+            <p className="text-text-muted text-sm">View and update your account information.</p>
           </div>
 
           {loading ? (
-            <div className="bg-[#1a1f2e] border border-white/5 rounded-xl p-6 text-gray-400">
-              Loading profile...
+            <div className="neon-card p-6 flex items-center justify-center">
+              <div className="w-8 h-8 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />
             </div>
           ) : (
             <>
               {(message || error) && (
                 <div
-                  className={`mb-6 px-4 py-3 rounded-lg border ${
+                  className={`mb-6 px-4 py-3 rounded-xl border ${
                     error
                       ? 'bg-red-500/10 border-red-500/20 text-red-300'
-                      : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'
+                      : 'bg-accent/10 border-accent/20 text-accent-light'
                   }`}
                 >
                   {error || message}
                 </div>
               )}
 
-              <div className="bg-[#1a1f2e] border border-white/5 rounded-xl overflow-hidden">
-                <div className="flex border-b border-white/5">
+              <div className="neon-card overflow-hidden">
+                <div className="flex border-b border-white/[0.04]">
                   <button
                     type="button"
                     onClick={() => setActiveTab('profile')}
                     className={`px-6 py-4 text-sm font-medium transition-colors ${
                       activeTab === 'profile'
-                        ? 'text-emerald-400 border-b-2 border-emerald-400'
-                        : 'text-gray-400 hover:text-white'
+                        ? 'text-accent border-b-2 border-accent'
+                        : 'text-text-muted hover:text-text-primary'
                     }`}
                   >
                     Edit Profile
@@ -201,8 +201,8 @@ const Profile = () => {
                     onClick={() => setActiveTab('password')}
                     className={`px-6 py-4 text-sm font-medium transition-colors ${
                       activeTab === 'password'
-                        ? 'text-emerald-400 border-b-2 border-emerald-400'
-                        : 'text-gray-400 hover:text-white'
+                        ? 'text-accent border-b-2 border-accent'
+                        : 'text-text-muted hover:text-text-primary'
                     }`}
                   >
                     Change Password
@@ -213,7 +213,7 @@ const Profile = () => {
                   {activeTab === 'profile' && (
                     <form onSubmit={handleProfileSubmit} className="space-y-5 max-w-xl">
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <label className="block text-sm font-medium text-text-secondary mb-2">
                           Full Name
                         </label>
                         <input
@@ -222,13 +222,13 @@ const Profile = () => {
                           onChange={(e) =>
                             setProfileForm({ ...profileForm, name: e.target.value })
                           }
-                          className="w-full px-4 py-3 rounded-lg bg-[#0f1419] border border-white/10 text-white outline-none focus:border-emerald-400"
+                          className="w-full px-4 py-3 rounded-xl bg-bg-card border border-white/[0.06] text-text-primary outline-none focus:border-accent/30 focus:ring-1 focus:ring-accent/10 transition-all"
                           placeholder="Your name"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <label className="block text-sm font-medium text-text-secondary mb-2">
                           Email Address
                         </label>
                         <input
@@ -237,7 +237,7 @@ const Profile = () => {
                           onChange={(e) =>
                             setProfileForm({ ...profileForm, email: e.target.value })
                           }
-                          className="w-full px-4 py-3 rounded-lg bg-[#0f1419] border border-white/10 text-white outline-none focus:border-emerald-400"
+                          className="w-full px-4 py-3 rounded-xl bg-bg-card border border-white/[0.06] text-text-primary outline-none focus:border-accent/30 focus:ring-1 focus:ring-accent/10 transition-all"
                           placeholder="Your email"
                         />
                       </div>
@@ -246,7 +246,7 @@ const Profile = () => {
                         <button
                           type="submit"
                           disabled={savingProfile}
-                          className="px-5 py-3 rounded-lg bg-emerald-500 text-black font-semibold hover:bg-emerald-400 transition-colors disabled:opacity-50"
+                          className="px-5 py-3 rounded-xl btn-neon font-semibold disabled:opacity-50"
                         >
                           {savingProfile ? 'Saving...' : 'Save Changes'}
                         </button>
@@ -254,7 +254,7 @@ const Profile = () => {
                         <button
                           type="button"
                           onClick={() => navigate('/dashboard')}
-                          className="px-5 py-3 rounded-lg border border-white/10 text-gray-300 hover:bg-white/5 transition-colors"
+                          className="px-5 py-3 rounded-xl border border-white/[0.08] text-text-secondary hover:bg-white/[0.04] transition-colors"
                         >
                           Back to Dashboard
                         </button>
@@ -265,7 +265,7 @@ const Profile = () => {
                   {activeTab === 'password' && (
                     <form onSubmit={handlePasswordSubmit} className="space-y-5 max-w-xl">
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <label className="block text-sm font-medium text-text-secondary mb-2">
                           Current Password
                         </label>
                         <input
@@ -274,13 +274,13 @@ const Profile = () => {
                           onChange={(e) =>
                             setPasswordForm({ ...passwordForm, currentPassword: e.target.value })
                           }
-                          className="w-full px-4 py-3 rounded-lg bg-[#0f1419] border border-white/10 text-white outline-none focus:border-emerald-400"
+                          className="w-full px-4 py-3 rounded-xl bg-bg-card border border-white/[0.06] text-text-primary outline-none focus:border-accent/30 focus:ring-1 focus:ring-accent/10 transition-all"
                           placeholder="Current password"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <label className="block text-sm font-medium text-text-secondary mb-2">
                           New Password
                         </label>
                         <input
@@ -289,13 +289,13 @@ const Profile = () => {
                           onChange={(e) =>
                             setPasswordForm({ ...passwordForm, newPassword: e.target.value })
                           }
-                          className="w-full px-4 py-3 rounded-lg bg-[#0f1419] border border-white/10 text-white outline-none focus:border-emerald-400"
+                          className="w-full px-4 py-3 rounded-xl bg-bg-card border border-white/[0.06] text-text-primary outline-none focus:border-accent/30 focus:ring-1 focus:ring-accent/10 transition-all"
                           placeholder="New password"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <label className="block text-sm font-medium text-text-secondary mb-2">
                           Confirm New Password
                         </label>
                         <input
@@ -304,7 +304,7 @@ const Profile = () => {
                           onChange={(e) =>
                             setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })
                           }
-                          className="w-full px-4 py-3 rounded-lg bg-[#0f1419] border border-white/10 text-white outline-none focus:border-emerald-400"
+                          className="w-full px-4 py-3 rounded-xl bg-bg-card border border-white/[0.06] text-text-primary outline-none focus:border-accent/30 focus:ring-1 focus:ring-accent/10 transition-all"
                           placeholder="Confirm new password"
                         />
                       </div>
@@ -313,7 +313,7 @@ const Profile = () => {
                         <button
                           type="submit"
                           disabled={savingPassword}
-                          className="px-5 py-3 rounded-lg bg-emerald-500 text-black font-semibold hover:bg-emerald-400 transition-colors disabled:opacity-50"
+                          className="px-5 py-3 rounded-xl btn-neon font-semibold disabled:opacity-50"
                         >
                           {savingPassword ? 'Changing...' : 'Change Password'}
                         </button>
@@ -323,14 +323,14 @@ const Profile = () => {
                 </div>
               </div>
 
-              <div className="mt-6 bg-[#1a1f2e] border border-white/5 rounded-xl p-6">
-                <h2 className="text-lg font-semibold mb-3">Current Account Info</h2>
-                <div className="space-y-2 text-sm text-gray-300">
+              <div className="mt-6 neon-card p-6">
+                <h2 className="text-base font-semibold mb-3">Current Account Info</h2>
+                <div className="space-y-2 text-sm text-text-secondary">
                   <p>
-                    <span className="text-gray-500">Name:</span> {userName || 'N/A'}
+                    <span className="text-text-muted">Name:</span> {userName || 'N/A'}
                   </p>
                   <p>
-                    <span className="text-gray-500">Email:</span> {userEmail || 'N/A'}
+                    <span className="text-text-muted">Email:</span> {userEmail || 'N/A'}
                   </p>
                 </div>
               </div>

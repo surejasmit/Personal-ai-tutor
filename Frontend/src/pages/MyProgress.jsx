@@ -38,14 +38,15 @@ const fetchJSON = async (path, token) => {
 };
 
 // ─── Small helper components ─────────────────────────────────
-const Badge = ({ children, color = "emerald" }) => {
+const Badge = ({ children, color = "green" }) => {
   const colors = {
-    emerald: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+    green: "bg-accent/10 text-accent border-accent/20",
+    emerald: "bg-accent/10 text-accent border-accent/20",
     amber: "bg-amber-500/10 text-amber-400 border-amber-500/20",
     blue: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-    purple: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+    purple: "bg-purple/10 text-purple-light border-purple/20",
     red: "bg-red-500/10 text-red-400 border-red-500/20",
-    gray: "bg-white/5 text-gray-400 border-white/10",
+    gray: "bg-white/5 text-text-muted border-white/10",
   };
   return (
     <span
@@ -92,16 +93,16 @@ const MiniBarChart = ({ current, previous, label }) => {
           width="14"
           height={currentH}
           rx="3"
-          fill="url(#emeraldGrad)"
+          fill="url(#neonGreenGrad)"
         />
         <defs>
-          <linearGradient id="emeraldGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#34d399" />
-            <stop offset="100%" stopColor="#059669" />
+          <linearGradient id="neonGreenGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#34f0a1" />
+            <stop offset="100%" stopColor="#00b368" />
           </linearGradient>
         </defs>
       </svg>
-      <span className="text-[10px] text-gray-500 font-medium">{label}</span>
+      <span className="text-[10px] text-text-muted font-medium">{label}</span>
     </div>
   );
 };
@@ -119,7 +120,10 @@ const ActivityHeatmap = ({ data = [] }) => {
     for (let i = 29; i >= 0; i--) {
       const d = new Date(today);
       d.setDate(d.getDate() - i);
-      const key = d.toISOString().split("T")[0];
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      const key = `${year}-${month}-${day}`;
       result.push({ date: key, count: map[key] || 0, day: d.getDay() });
     }
     return result;
@@ -127,10 +131,10 @@ const ActivityHeatmap = ({ data = [] }) => {
 
   const getColor = (count) => {
     if (count === 0) return "rgba(255,255,255,0.04)";
-    if (count === 1) return "rgba(16,185,129,0.25)";
-    if (count === 2) return "rgba(16,185,129,0.45)";
-    if (count <= 4) return "rgba(16,185,129,0.65)";
-    return "rgba(16,185,129,0.9)";
+    if (count === 1) return "rgba(0,217,126,0.25)";
+    if (count === 2) return "rgba(0,217,126,0.45)";
+    if (count <= 4) return "rgba(0,217,126,0.65)";
+    return "rgba(0,217,126,0.9)";
   };
 
   const dayLabels = ["", "Mon", "", "Wed", "", "Fri", ""];
@@ -141,19 +145,19 @@ const ActivityHeatmap = ({ data = [] }) => {
     <div>
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-base font-semibold text-white">
+          <h3 className="text-base font-semibold text-text-primary">
             Activity Heatmap
           </h3>
-          <p className="text-xs text-gray-500 mt-0.5">Last 30 days</p>
+          <p className="text-xs text-text-muted mt-0.5">Last 30 days</p>
         </div>
         <div className="flex items-center gap-4">
           <div className="text-right">
-            <p className="text-lg font-bold text-white">{totalQuizzes}</p>
-            <p className="text-[10px] text-gray-500">Total quizzes</p>
+            <p className="text-lg font-bold text-text-primary">{totalQuizzes}</p>
+            <p className="text-[10px] text-text-muted">Total quizzes</p>
           </div>
           <div className="text-right">
-            <p className="text-lg font-bold text-emerald-400">{activeDays}</p>
-            <p className="text-[10px] text-gray-500">Active days</p>
+            <p className="text-lg font-bold text-accent">{activeDays}</p>
+            <p className="text-[10px] text-text-muted">Active days</p>
           </div>
         </div>
       </div>
@@ -162,7 +166,7 @@ const ActivityHeatmap = ({ data = [] }) => {
         {/* Day labels */}
         <div className="flex flex-col gap-[3px] mr-1 pt-5">
           {dayLabels.map((label, i) => (
-            <span key={i} className="text-[9px] text-gray-500 h-[18px] leading-[18px]">
+            <span key={i} className="text-[9px] text-text-muted h-[18px] leading-[18px]">
               {label}
             </span>
           ))}
@@ -180,16 +184,16 @@ const ActivityHeatmap = ({ data = [] }) => {
                     className="group relative"
                   >
                     <div
-                      className="w-[18px] h-[18px] rounded-[4px] transition-all duration-200 hover:ring-1 hover:ring-emerald-400/50 hover:scale-125 cursor-pointer"
+                      className="w-[18px] h-[18px] rounded-[4px] transition-all duration-200 hover:ring-1 hover:ring-accent/50 hover:scale-125 cursor-pointer"
                       style={{ background: getColor(cell.count) }}
                     />
                     {/* Tooltip */}
                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50">
-                      <div className="bg-[#1c1c1f] border border-white/10 rounded-lg px-3 py-1.5 text-xs whitespace-nowrap shadow-xl">
-                        <span className="text-white font-medium">
+                      <div className="bg-bg-card border border-white/10 rounded-lg px-3 py-1.5 text-xs whitespace-nowrap shadow-xl">
+                        <span className="text-text-primary font-medium">
                           {cell.count} quiz{cell.count !== 1 ? "zes" : ""}
                         </span>
-                        <span className="text-gray-500 ml-1.5">
+                        <span className="text-text-muted ml-1.5">
                           {new Date(cell.date).toLocaleDateString("en-US", {
                             month: "short",
                             day: "numeric",
@@ -206,7 +210,7 @@ const ActivityHeatmap = ({ data = [] }) => {
 
       {/* Legend */}
       <div className="flex items-center gap-2 mt-3 justify-end">
-        <span className="text-[10px] text-gray-500">Less</span>
+        <span className="text-[10px] text-text-muted">Less</span>
         {[0, 1, 2, 3, 5].map((v, i) => (
           <div
             key={i}
@@ -214,7 +218,7 @@ const ActivityHeatmap = ({ data = [] }) => {
             style={{ background: getColor(v) }}
           />
         ))}
-        <span className="text-[10px] text-gray-500">More</span>
+        <span className="text-[10px] text-text-muted">More</span>
       </div>
     </div>
   );
@@ -223,8 +227,8 @@ const ActivityHeatmap = ({ data = [] }) => {
 // ─── Skill Radar / Bar Chart ────────────────────────────────
 const SkillBars = ({ skills = [] }) => {
   const getGrade = (score) => {
-    if (score >= 90) return { label: "A+", color: "emerald" };
-    if (score >= 80) return { label: "A", color: "emerald" };
+    if (score >= 90) return { label: "A+", color: "green" };
+    if (score >= 80) return { label: "A", color: "green" };
     if (score >= 70) return { label: "B", color: "blue" };
     if (score >= 60) return { label: "C", color: "amber" };
     return { label: "D", color: "red" };
@@ -232,10 +236,10 @@ const SkillBars = ({ skills = [] }) => {
 
   if (!skills.length) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+      <div className="flex flex-col items-center justify-center py-12 text-text-muted">
         <Target size={40} className="mb-3 opacity-30" />
         <p className="text-sm">No skills data yet</p>
-        <p className="text-xs mt-1 text-gray-600">Complete quizzes to see your skills</p>
+        <p className="text-xs mt-1 text-text-muted">Complete quizzes to see your skills</p>
       </div>
     );
   }
@@ -248,16 +252,16 @@ const SkillBars = ({ skills = [] }) => {
           <div key={i} className="group">
             <div className="flex items-center justify-between mb-1.5">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-200 group-hover:text-white transition-colors">
+                <span className="text-sm font-medium text-text-secondary group-hover:text-text-primary transition-colors">
                   {skill.topic_name}
                 </span>
                 <Badge color={grade.color}>{grade.label}</Badge>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-text-muted">
                   {skill.attempts} attempt{skill.attempts !== 1 ? "s" : ""}
                 </span>
-                <span className="text-sm font-bold text-white">
+                <span className="text-sm font-bold text-text-primary">
                   {skill.avg_score}%
                 </span>
               </div>
@@ -269,7 +273,7 @@ const SkillBars = ({ skills = [] }) => {
                   width: `${skill.avg_score}%`,
                   background:
                     Number(skill.avg_score) >= 70
-                      ? "linear-gradient(90deg, #059669, #34d399)"
+                      ? "linear-gradient(90deg, #00b368, #00d97e)"
                       : Number(skill.avg_score) >= 50
                       ? "linear-gradient(90deg, #d97706, #fbbf24)"
                       : "linear-gradient(90deg, #dc2626, #f87171)",
@@ -313,12 +317,12 @@ const Sparkline = ({ data = [], width = 120, height = 32 }) => {
         >
           <stop
             offset="0%"
-            stopColor={trend === "up" ? "#059669" : "#dc2626"}
+            stopColor={trend === "up" ? "#00b368" : "#dc2626"}
             stopOpacity="0.3"
           />
           <stop
             offset="100%"
-            stopColor={trend === "up" ? "#34d399" : "#f87171"}
+            stopColor={trend === "up" ? "#00d97e" : "#f87171"}
           />
         </linearGradient>
       </defs>
@@ -339,7 +343,7 @@ const Sparkline = ({ data = [], width = 120, height = 32 }) => {
           2
         }
         r="3"
-        fill={trend === "up" ? "#34d399" : "#f87171"}
+        fill={trend === "up" ? "#00d97e" : "#f87171"}
       />
     </svg>
   );
@@ -363,12 +367,12 @@ const TimelineEvent = ({ event, isLast }) => {
         <div
           className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
             isGood
-              ? "bg-emerald-500/10 border border-emerald-500/20"
+              ? "bg-accent/10 border border-accent/20"
               : "bg-amber-500/10 border border-amber-500/20"
           }`}
         >
           {isGood ? (
-            <CheckCircle size={18} className="text-emerald-400" />
+            <CheckCircle size={18} className="text-accent" />
           ) : (
             <Target size={18} className="text-amber-400" />
           )}
@@ -380,13 +384,13 @@ const TimelineEvent = ({ event, isLast }) => {
 
       {/* Content */}
       <div className="pb-6 flex-1 min-w-0">
-        <div className="bg-[#14181f] rounded-xl p-4 border border-white/5 hover:border-white/10 transition-all group">
+        <div className="bg-bg-card rounded-xl p-4 border border-white/[0.06] hover:border-white/10 transition-all group">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <h4 className="text-sm font-semibold text-white truncate group-hover:text-emerald-400 transition-colors">
+              <h4 className="text-sm font-semibold text-text-primary truncate group-hover:text-accent transition-colors">
                 {event.topic_name}
               </h4>
-              <p className="text-xs text-gray-500 mt-0.5">
+              <p className="text-xs text-text-muted mt-0.5">
                 {new Date(event.created_at).toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",
@@ -399,7 +403,7 @@ const TimelineEvent = ({ event, isLast }) => {
             <div className="text-right shrink-0">
               <span
                 className={`text-lg font-bold ${
-                  isGood ? "text-emerald-400" : "text-amber-400"
+                  isGood ? "text-accent" : "text-amber-400"
                 }`}
               >
                 {pct}%
@@ -408,19 +412,19 @@ const TimelineEvent = ({ event, isLast }) => {
           </div>
 
           <div className="flex items-center gap-4 mt-3 pt-3 border-t border-white/5">
-            <div className="flex items-center gap-1.5 text-xs text-gray-400">
-              <CheckCircle size={12} className="text-emerald-400" />
+            <div className="flex items-center gap-1.5 text-xs text-text-muted">
+              <CheckCircle size={12} className="text-accent" />
               <span>
                 {event.correct_answers}/{event.total_questions} correct
               </span>
             </div>
-            <div className="flex items-center gap-1.5 text-xs text-gray-400">
+            <div className="flex items-center gap-1.5 text-xs text-text-muted">
               <Clock size={12} />
               <span>{formatTime(event.time_taken)}</span>
             </div>
             {event.score && (
-              <div className="flex items-center gap-1.5 text-xs text-gray-400">
-                <Award size={12} className="text-purple-400" />
+              <div className="flex items-center gap-1.5 text-xs text-text-muted">
+                <Award size={12} className="text-purple-light" />
                 <span>{event.score} pts</span>
               </div>
             )}
@@ -542,7 +546,7 @@ const MyProgress = () => {
   // ── Loading skeleton ──
   if (loading) {
     return (
-      <div className="flex min-h-screen bg-[#0a0e1a]">
+      <div className="flex min-h-screen bg-bg-primary">
         <Sidebar />
         <div className="flex-1 ml-56">
           <TopBar userName={userName} />
@@ -566,7 +570,7 @@ const MyProgress = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#0a0e1a]">
+    <div className="flex min-h-screen bg-bg-primary text-text-primary">
       <Sidebar />
 
       <div className="flex-1 ml-56">
@@ -576,12 +580,12 @@ const MyProgress = () => {
           {/* ── Page Header ── */}
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-                <TrendingUp size={20} className="text-emerald-400" />
+              <div className="w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center">
+                <TrendingUp size={20} className="text-accent" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">My Progress</h1>
-                <p className="text-sm text-gray-500">
+                <h1 className="text-2xl font-bold text-text-primary">Your Learning Analytics</h1>
+                <p className="text-sm text-text-muted">
                   Track your learning journey and growth
                 </p>
               </div>
@@ -594,22 +598,22 @@ const MyProgress = () => {
               const isUp = stat.change > 0;
               const isNeutral = stat.change === 0;
               const colorMap = {
-                emerald: "from-emerald-500/10 to-emerald-500/5",
+                emerald: "from-accent/10 to-accent/5",
                 blue: "from-blue-500/10 to-blue-500/5",
-                purple: "from-purple-500/10 to-purple-500/5",
+                purple: "from-purple/10 to-purple/5",
                 amber: "from-amber-500/10 to-amber-500/5",
               };
               const iconColorMap = {
-                emerald: "text-emerald-400",
+                emerald: "text-accent",
                 blue: "text-blue-400",
-                purple: "text-purple-400",
+                purple: "text-purple-light",
                 amber: "text-amber-400",
               };
 
               return (
                 <div
                   key={i}
-                  className="relative bg-[#14181f] rounded-2xl p-5 border border-white/5 hover:border-white/10 transition-all group overflow-hidden"
+                  className="relative bg-bg-secondary rounded-2xl p-5 border border-white/[0.06] hover:border-white/10 transition-all group overflow-hidden"
                 >
                   {/* Gradient glow */}
                   <div
@@ -625,7 +629,7 @@ const MyProgress = () => {
                       <div
                         className={`flex items-center gap-1 text-xs font-semibold ${
                           isNeutral
-                            ? "text-gray-500"
+                            ? "text-text-muted"
                             : isUp
                             ? "text-emerald-400"
                             : "text-red-400"
@@ -642,16 +646,16 @@ const MyProgress = () => {
                       </div>
                     </div>
 
-                    <p className="text-2xl font-bold text-white mb-1">
+                    <p className="text-2xl font-bold text-text-primary mb-1">
                       {stat.value}
                     </p>
-                    <p className="text-xs text-gray-500">{stat.label}</p>
+                    <p className="text-xs text-text-muted">{stat.label}</p>
 
                     <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-white/5">
-                      <span className="text-[10px] text-gray-600">
+                      <span className="text-[10px] text-text-muted">
                         Last week:
                       </span>
-                      <span className="text-[10px] text-gray-400 font-medium">
+                      <span className="text-[10px] text-text-secondary font-medium">
                         {stat.prev}
                       </span>
                     </div>
@@ -659,7 +663,7 @@ const MyProgress = () => {
                 </div>
               );
             }) || (
-              <div className="col-span-4 text-center py-8 text-gray-500 text-sm">
+              <div className="col-span-4 text-center py-8 text-text-muted text-sm">
                 No weekly data available yet
               </div>
             )}
@@ -668,11 +672,11 @@ const MyProgress = () => {
           {/* ══════════════ SKILLS + HEATMAP ROW ══════════════ */}
           <div className="grid grid-cols-5 gap-6 mb-8">
             {/* Skills - 3 columns */}
-            <div className="col-span-3 bg-[#14181f] rounded-2xl p-6 border border-white/5">
+            <div className="col-span-3 bg-bg-secondary rounded-2xl p-6 border border-white/[0.06]">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-2">
-                  <BarChart3 size={18} className="text-emerald-400" />
-                  <h3 className="text-base font-semibold text-white">
+                  <BarChart3 size={18} className="text-accent" />
+                  <h3 className="text-base font-semibold text-text-primary">
                     Skill Breakdown
                   </h3>
                 </div>
@@ -684,21 +688,21 @@ const MyProgress = () => {
             </div>
 
             {/* Heatmap - 2 columns */}
-            <div className="col-span-2 bg-[#14181f] rounded-2xl p-6 border border-white/5">
+            <div className="col-span-2 bg-bg-secondary rounded-2xl p-6 border border-white/[0.06]">
               <ActivityHeatmap data={heatmap} />
             </div>
           </div>
 
           {/* ══════════════ TOPIC JOURNEY ══════════════ */}
           {journey.length > 0 && (
-            <div className="bg-[#14181f] rounded-2xl p-6 border border-white/5 mb-8">
+            <div className="bg-bg-secondary rounded-2xl p-6 border border-white/[0.06] mb-8">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-2">
                   <Zap size={18} className="text-amber-400" />
-                  <h3 className="text-base font-semibold text-white">
+                  <h3 className="text-base font-semibold text-text-primary">
                     Topic Journey
                   </h3>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-text-muted">
                     Score trends over time
                   </span>
                 </div>
@@ -717,14 +721,14 @@ const MyProgress = () => {
                   return (
                     <div
                       key={i}
-                      className="bg-[#0f1219] rounded-xl p-4 border border-white/5 hover:border-white/10 transition-all group"
+                      className="bg-bg-card rounded-xl p-4 border border-white/[0.06] hover:border-white/10 transition-all group"
                     >
                       <div className="flex items-start justify-between mb-3">
                         <div className="min-w-0 flex-1">
-                          <h4 className="text-sm font-semibold text-gray-200 truncate group-hover:text-white transition-colors">
+                          <h4 className="text-sm font-semibold text-text-secondary truncate group-hover:text-text-primary transition-colors">
                             {topic.topic}
                           </h4>
-                          <p className="text-xs text-gray-600 mt-0.5">
+                          <p className="text-xs text-text-muted mt-0.5">
                             {attempts.length} attempt
                             {attempts.length !== 1 ? "s" : ""}
                           </p>
@@ -733,7 +737,7 @@ const MyProgress = () => {
                           <div
                             className={`flex items-center gap-0.5 text-xs font-semibold ${
                               improvement > 0
-                                ? "text-emerald-400"
+                                ? "text-accent"
                                 : "text-red-400"
                             }`}
                           >
@@ -749,7 +753,7 @@ const MyProgress = () => {
 
                       <div className="flex items-end justify-between">
                         <Sparkline data={attempts} width={100} height={28} />
-                        <span className="text-lg font-bold text-white">
+                        <span className="text-lg font-bold text-text-primary">
                           {latest?.percentage || 0}%
                         </span>
                       </div>
@@ -761,11 +765,11 @@ const MyProgress = () => {
           )}
 
           {/* ══════════════ RECENT TIMELINE ══════════════ */}
-          <div className="bg-[#14181f] rounded-2xl p-6 border border-white/5">
+          <div className="bg-bg-secondary rounded-2xl p-6 border border-white/[0.06]">
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
                 <Calendar size={18} className="text-blue-400" />
-                <h3 className="text-base font-semibold text-white">
+                <h3 className="text-base font-semibold text-text-primary">
                   Recent Activity
                 </h3>
                 {timeline.length > 0 && (
@@ -775,10 +779,10 @@ const MyProgress = () => {
             </div>
 
             {timeline.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-16 text-gray-500">
+              <div className="flex flex-col items-center justify-center py-16 text-text-muted">
                 <Calendar size={40} className="mb-3 opacity-20" />
                 <p className="text-sm">No activity yet</p>
-                <p className="text-xs mt-1 text-gray-600">
+                <p className="text-xs mt-1 text-text-muted">
                   Start taking quizzes to see your timeline
                 </p>
               </div>
@@ -806,7 +810,7 @@ const MyProgress = () => {
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 2px; }
-        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(16,185,129,0.3); }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(0,217,126,0.3); }
       `}</style>
     </div>
   );

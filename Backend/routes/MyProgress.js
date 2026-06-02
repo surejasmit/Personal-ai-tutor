@@ -38,12 +38,12 @@ router.get('/heatmap/:UserId',async (req, res) => {
 
         const result = await pool.query(
             `select
-                DATE(created_at) as date,
+                TO_CHAR(created_at + INTERVAL '5 hours 30 minutes', 'YYYY-MM-DD') as date,
                 count(id) as quiz_count
             from quiz_results
             where user_id = $1
-            and created_at >= current_date - interval '30 days'
-            group by DATE(created_at)
+            and created_at >= NOW() - interval '30 days'
+            group by TO_CHAR(created_at + INTERVAL '5 hours 30 minutes', 'YYYY-MM-DD')
             order by date asc
             `,[UserId]
         );
@@ -55,7 +55,7 @@ router.get('/heatmap/:UserId',async (req, res) => {
     }
     catch(err){
         console.error('Heatmap error:', err);
-        res.error(500).json({error: 'Internal server error'});
+        res.status(500).json({error: 'Internal server error'});
     }
 });
 
@@ -67,12 +67,12 @@ router.get('/weekly-comparison/:userId',async (req, res) => {
 
         const thisweek = await pool.query(
             `select 
-                count(id) as quizzes_taken
-                ROUND(avg(precentage)) as avg_score
+                count(id) as quizzes_taken,
+                ROUND(avg(percentage)) as avg_score,
                 sum(time_taken) as total_time
             from quiz_results
             where user_id = $1
-            and created_at >= current_date - interval '7 days'
+            and created_at >= NOW() - interval '7 days'
             `,[userId]
         );
 
@@ -100,13 +100,13 @@ router.get('/weekly-comparison/:userId',async (req, res) => {
             lastweek : {
                 quizzes_taken: Number(previous.quizzes_taken || 0),
                 avg_score: Number(previous.avg_score || 0),
-                total_time: Number(previous.total_time || 0)
+                total_time: Number(previous.total_time_seconds || 0)
             }
         })
     }
     catch(err){
         console.error('Weekly comparison error:', err);
-        res.json(500).json({error: 'Internal server error'});
+        res.status(500).json({error: 'Internal server error'});
     }
 });
 // GET /api/progress/topic-journey/:userId

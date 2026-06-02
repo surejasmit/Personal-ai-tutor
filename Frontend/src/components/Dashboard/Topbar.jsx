@@ -31,51 +31,48 @@ const TopBar = ({ userName }) => {
   };
 
   return (
-    <header className="flex items-center justify-between px-8 py-4 bg-[#0a0e1a] border-b border-white/5 relative">
-      <div className="flex items-center gap-3 bg-[#1a1f2e] px-4 py-2.5 rounded-lg border border-white/5 w-96">
-        <Search size={18} className="text-gray-400" />
+    <header className="flex items-center justify-between px-8 py-4 bg-bg-primary/90 backdrop-blur-md border-b border-white/[0.04] relative">
+      <div className="flex items-center gap-3 bg-bg-secondary/80 px-4 py-2.5 rounded-xl border border-white/[0.06] w-96 transition-colors focus-within:border-accent/20">
+        <Search size={18} className="text-text-muted" />
         <input
           type="text"
-          placeholder="Search topics, quizzes..."
-          className="bg-transparent outline-none text-sm w-full text-gray-300 placeholder:text-gray-500"
+          placeholder="Search anything..."
+          className="bg-transparent outline-none text-sm w-full text-text-primary placeholder:text-text-muted"
         />
       </div>
 
       <div className="flex items-center gap-4">
-        <button className="relative p-2 hover:bg-white/5 rounded-lg transition-all">
-          <Bell size={20} className="text-gray-400" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-emerald-500 rounded-full"></span>
-          <span className="absolute -top-1 -right-1 bg-emerald-500 text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-            3
-          </span>
+        <button className="relative p-2.5 hover:bg-white/[0.04] rounded-xl transition-all group">
+          <Bell size={20} className="text-text-muted group-hover:text-text-secondary transition-colors" />
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-accent rounded-full ring-2 ring-bg-primary"></span>
         </button>
 
         <div className="relative" ref={menuRef}>
           <button
             type="button"
             onClick={() => setMenuOpen((prev) => !prev)}
-            className="flex items-center gap-3 pl-4 border-l border-white/5 hover:bg-white/5 px-3 py-1.5 rounded-lg transition-all"
+            className="flex items-center gap-3 pl-4 border-l border-white/[0.06] hover:bg-white/[0.04] px-3 py-1.5 rounded-xl transition-all"
           >
-            <div className="w-9 h-9 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center">
-              <span className="text-sm font-semibold">
+            <div className="w-9 h-9 bg-gradient-to-br from-accent to-purple rounded-full flex items-center justify-center ring-2 ring-accent/20">
+              <span className="text-sm font-semibold text-bg-primary">
                 {userName ? userName.charAt(0).toUpperCase() : 'U'}
               </span>
             </div>
-            <span className="text-sm font-medium">{userName || 'User'}</span>
-            <ChevronDown size={16} className="text-gray-400" />
+            <span className="text-sm font-medium text-text-primary">{userName || 'User'}</span>
+            <ChevronDown size={16} className="text-text-muted" />
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 mt-3 w-56 rounded-xl border border-white/10 bg-[#111626] shadow-xl overflow-hidden z-50">
-              <div className="px-4 py-3 border-b border-white/5">
-                <p className="text-sm font-semibold text-white">{userName || 'User'}</p>
-                <p className="text-xs text-gray-400">Student profile</p>
+            <div className="absolute right-0 mt-3 w-56 rounded-xl border border-white/[0.08] bg-bg-card shadow-2xl shadow-black/40 overflow-hidden z-50">
+              <div className="px-4 py-3 border-b border-white/[0.06]">
+                <p className="text-sm font-semibold text-text-primary">{userName || 'User'}</p>
+                <p className="text-xs text-text-muted">Student profile</p>
               </div>
 
               <button
                 type="button"
                 onClick={handleProfileClick}
-                className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-3 text-sm text-text-secondary hover:bg-white/[0.04] hover:text-text-primary transition-colors"
               >
                 <User size={16} />
                 Profile
@@ -84,7 +81,7 @@ const TopBar = ({ userName }) => {
               <button
                 type="button"
                 onClick={handleProfileClick}
-                className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-3 text-sm text-text-secondary hover:bg-white/[0.04] hover:text-text-primary transition-colors"
               >
                 <Settings size={16} />
                 Account Settings
@@ -93,7 +90,7 @@ const TopBar = ({ userName }) => {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 transition-colors border-t border-white/[0.06]"
               >
                 <LogOut size={16} />
                 Log Out
