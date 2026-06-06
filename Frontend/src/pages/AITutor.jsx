@@ -129,7 +129,7 @@ const AITutor = () => {
   };
 
   const handleQuickPrompt = (prompt) => {
-    navigate('/topics', { state: { prompt } });
+    navigate('/chatbot', { state: { prompt } });
   };
 
   return (
@@ -246,7 +246,7 @@ const AITutor = () => {
                   <div className="flex flex-wrap gap-3">
                     <button
                       type="button"
-                      onClick={() => navigate('/topics')}
+                      onClick={() => navigate('/courses')}
                       className="px-5 py-2.5 rounded-xl btn-neon font-semibold"
                     >
                       Continue Learning
