@@ -30,6 +30,10 @@ app.use('/api/recommendation', recommendationRoutes);
 const myProgressRoutes = require('./routes/MyProgress');
 app.use('/api/myprogress', myProgressRoutes);
 
+// Chatbot routes (Gemini AI)
+const chatbotRoutes = require('./routes/chatbot');
+app.use('/api/chatbot', chatbotRoutes);
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

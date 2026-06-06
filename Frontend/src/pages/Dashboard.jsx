@@ -185,7 +185,7 @@ const Dashboard = () => {
                                 </p>
                             </div>
                             <button
-                                onClick={() => navigate('/topics')}
+                                onClick={() => navigate('/quizzes')}
                                 className="px-5 py-2.5 rounded-xl btn-neon font-semibold flex-shrink-0 flex items-center gap-2 relative z-10"
                             >
                                 Start Quiz
@@ -231,7 +231,7 @@ const Dashboard = () => {
                         <div className="neon-card p-6 h-80 overflow-y-auto">
                             <div className="flex items-center justify-between mb-5">
                                 <h3 className="text-base font-semibold">Continue Learning</h3>
-                                <a href="/topics" className="text-xs text-accent hover:text-accent-light transition-colors">View All</a>
+                                <a href="/courses" className="text-xs text-accent hover:text-accent-light transition-colors">View All</a>
                             </div>
                             <div className="space-y-4">
                                 {progressData.map((course) => (
@@ -256,7 +256,7 @@ const Dashboard = () => {
                     <div className="neon-card p-6">
                         <div className="flex items-center justify-between mb-5">
                             <h3 className="text-base font-semibold">Recommended for You</h3>
-                            <a href="/topics" className="text-xs text-accent hover:text-accent-light transition-colors">View All</a>
+                            <a href="/courses" className="text-xs text-accent hover:text-accent-light transition-colors">View All</a>
                         </div>
                         <div className="grid grid-cols-4 gap-4">
                             {recommendedCourses.map((course) => (

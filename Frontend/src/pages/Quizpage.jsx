@@ -177,7 +177,7 @@ const QuizPage = () => {
           {/* Header */}
           <div className="flex items-center gap-3 mb-6">
             <button
-              onClick={() => navigate('/topics')}
+              onClick={() => navigate('/quizzes')}
               className="flex items-center gap-1.5 text-sm text-text-muted hover:text-text-primary transition-colors"
             >
               <ChevronLeft size={16} />
@@ -231,7 +231,7 @@ const QuizPage = () => {
                   Go to Dashboard
                 </button>
                 <button
-                  onClick={() => navigate("/topics")}
+                  onClick={() => navigate("/quizzes")}
                   className="px-6 py-3 rounded-xl border border-white/[0.08] text-text-secondary hover:bg-white/[0.04] transition-colors"
                 >
                   Try Another Quiz

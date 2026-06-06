@@ -18,10 +18,9 @@ const Sidebar = () => {
     { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
     { icon: Bot, label: 'AI Recommendation', path: '/ai-tutor' },
     { icon: BookOpen, label: 'Courses', path: '/topics' },
-    { icon: FileText, label: 'Quizzes', path: '/topics' },
     { icon: TrendingUp, label: 'Analytics', path: '/progress' },
     { icon: Bookmark, label: 'Bookmarks', path: '/bookmarks' },
-    { icon: MessageSquare, label: 'Messages', path: '/messages' },
+    { icon: MessageSquare, label: 'AI Chatbot', path: '/chatbot' },
     { icon: Settings, label: 'Settings', path: '/profile' },
   ];
 
