@@ -38,12 +38,12 @@ router.get('/heatmap/:UserId',async (req, res) => {
 
         const result = await pool.query(
             `select
-                TO_CHAR(created_at + INTERVAL '5 hours 30 minutes', 'YYYY-MM-DD') as date,
+                TO_CHAR(created_at, 'YYYY-MM-DD') as date,
                 count(id) as quiz_count
             from quiz_results
             where user_id = $1
             and created_at >= NOW() - interval '30 days'
-            group by TO_CHAR(created_at + INTERVAL '5 hours 30 minutes', 'YYYY-MM-DD')
+            group by TO_CHAR(created_at, 'YYYY-MM-DD')
             order by date asc
             `,[UserId]
         );
