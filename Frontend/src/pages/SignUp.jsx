@@ -1,14 +1,25 @@
 import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import { useNavigate, Link } from 'react-router-dom';
-import { ArrowRight, BarChart3, CheckCircle2, LockKeyhole, Mail, Sparkles, User } from 'lucide-react';
+import { ArrowRight, BarChart3, CheckCircle2, ChevronDown, LockKeyhole, Mail, ShieldQuestion, Sparkles, User } from 'lucide-react';
 
 const SignUp = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [securityQuestion, setSecurityQuestion] = useState('');
+  const [securityAnswer, setSecurityAnswer] = useState('');
   const [error, setError] = useState('');
+
+  const securityQuestions = [
+    'What is your favorite color?',
+    'What was the name of your first pet?',
+    'What city were you born in?',
+    'What is your mother\'s maiden name?',
+    'What was your childhood nickname?',
+    'What is the name of your favorite teacher?',
+  ];
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
@@ -17,7 +28,7 @@ const SignUp = () => {
     setError('');
     setSuccess('');
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !securityQuestion || !securityAnswer) {
       setError('Please fill all required fields.');
       return;
     }
@@ -30,7 +41,7 @@ const SignUp = () => {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, password, securityQuestion, securityAnswer }),
       });
 
       if (!res.ok) {
@@ -167,6 +178,46 @@ const SignUp = () => {
                     placeholder="Confirm password"
                     value={confirm}
                     onChange={(e) => setConfirm(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Security Question for Forgot Password */}
+              <div className="pt-2 border-t border-white/[0.04]">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-accent/70 flex items-center gap-1.5">
+                  <ShieldQuestion size={14} />
+                  Account Recovery
+                </p>
+                <label className="mb-2 block text-sm font-medium text-text-secondary">Security question</label>
+                <div className="relative">
+                  <ShieldQuestion className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
+                  <select
+                    className="w-full rounded-xl bg-bg-card border border-white/[0.06] pl-11 pr-10 py-3 text-text-primary appearance-none focus:outline-none focus:border-accent/30 focus:ring-1 focus:ring-accent/10 transition-all cursor-pointer"
+                    value={securityQuestion}
+                    onChange={(e) => setSecurityQuestion(e.target.value)}
+                    required
+                    style={{ colorScheme: 'dark' }}
+                  >
+                    <option value="" disabled>Choose a security question</option>
+                    {securityQuestions.map((q) => (
+                      <option key={q} value={q}>{q}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" size={16} />
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-text-secondary">Your answer</label>
+                <div className="relative">
+                  <LockKeyhole className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
+                  <input
+                    type="text"
+                    className="w-full rounded-xl bg-bg-card border border-white/[0.06] pl-11 pr-4 py-3 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/30 focus:ring-1 focus:ring-accent/10 transition-all"
+                    placeholder="Enter your answer"
+                    value={securityAnswer}
+                    onChange={(e) => setSecurityAnswer(e.target.value)}
                     required
                   />
                 </div>
