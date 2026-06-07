@@ -220,7 +220,6 @@ _TODO: Add screenshots of the dashboard, quiz page, chatbot, and progress page._
 
 - The ML model needs a decent amount of quiz data before recommendations get accurate. With just a few quizzes it tends to overfit.
 - No email-based password reset — using security questions instead (works offline, simpler setup).
-- Could add difficulty levels to questions (easy/medium/hard) to make adaptive quizzes smarter.
 - Mobile responsiveness is mostly there but some pages could use tweaking on very small screens.
 
 ## License
