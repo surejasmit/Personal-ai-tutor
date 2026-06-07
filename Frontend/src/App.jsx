@@ -10,6 +10,7 @@ import Profile from './pages/Profile';
 import AITutor from './pages/AITutor';
 import MyProgress from './pages/MyProgress';
 import Chatbot from './pages/Chatbot';
+import NotFound from './pages/NotFound';
 function App() {
   return (
     <BrowserRouter>
@@ -25,7 +26,7 @@ function App() {
           <Route path="/ai-tutor" element={<AITutor />} />
           <Route path="/progress" element={<MyProgress />} />
           <Route path="/chatbot" element={<Chatbot />} />
-          <Route path="*" element={<h1>404 Not Found</h1>} />
+          <Route path="*" element={<NotFound />} />
           
       </Routes>
     </BrowserRouter>
