@@ -24,7 +24,15 @@ app.use('/api/profile', profileRoutes);
 
 // recommendation routes
 const recommendationRoutes = require('./routes/recommendation')
-app.use('/api/recommendation',recommendationRoutes);
+app.use('/api/recommendation', recommendationRoutes);
+
+// My progress routes
+const myProgressRoutes = require('./routes/MyProgress');
+app.use('/api/myprogress', myProgressRoutes);
+
+// Chatbot routes (Gemini AI)
+const chatbotRoutes = require('./routes/chatbot');
+app.use('/api/chatbot', chatbotRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

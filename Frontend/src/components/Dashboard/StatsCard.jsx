@@ -1,17 +1,19 @@
 const StatsCard = ({ icon: Icon, title, value, change, changeLabel, iconBg, iconColor }) => {
   return (
-    <div className="premium-card group rounded-3xl p-5 transition duration-300 hover:-translate-y-1 hover:shadow-lift">
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <p className="text-sm font-semibold text-slate-500">{title}</p>
-          <h3 className="mt-2 text-3xl font-black tracking-tight text-slate-950">{value}</h3>
-          <p className="mt-2 text-sm font-bold text-brand">
-            {change} <span className="font-medium text-slate-500">{changeLabel}</span>
+    <div className="neon-card p-5 hover:border-accent/15 group">
+      <div className="flex items-start justify-between">
+        {/* Left Side - Text Content */}
+        <div>
+          <p className="text-text-muted text-xs font-medium uppercase tracking-wider mb-2">{title}</p>
+          <h3 className="text-2xl font-bold text-text-primary mb-1.5">{value}</h3>
+          <p className="text-accent text-xs font-semibold">
+            {change} <span className="text-text-muted font-normal">{changeLabel}</span>
           </p>
         </div>
 
-        <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${iconBg}`}>
-          <Icon size={24} className={iconColor} />
+        {/* Right Side - Icon */}
+        <div className={`w-11 h-11 ${iconBg} rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110`}>
+          <Icon size={20} className={iconColor} />
         </div>
       </div>
     </div>
@@ -19,4 +21,3 @@ const StatsCard = ({ icon: Icon, title, value, change, changeLabel, iconBg, icon
 };
 
 export default StatsCard;
-

@@ -22,6 +22,7 @@ import numpy as np
 import psycopg2
 from dotenv import load_dotenv
 import joblib
+import pandas as pd
 
 # -----------------------------------------------
 # STEP 1: Load environment variables from .env
@@ -159,9 +160,20 @@ def predict(user_id, topic_id, percentage, score, wrong_answers, time_taken):
         # -----------------------------------------------
         # Prepare the input features for prediction
         # -----------------------------------------------
-        # The features must be in the SAME ORDER as during training:
-        # [topic_id, percentage, score, wrong_answers, time_taken]
-        input_features = np.array([[topic_id, percentage, score, wrong_answers, time_taken]])
+        # Construct DataFrame with exactly the same features and order as during training
+        correct_answers = score
+        total_questions = score + wrong_answers
+        
+        input_dict = {
+            'topic_id': [topic_id],
+            'score': [score],
+            'total_questions': [total_questions],
+            'correct_answers': [correct_answers],
+            'wrong_answers': [wrong_answers],
+            'time_taken': [time_taken],
+            'percentage': [percentage]
+        }
+        input_features = pd.DataFrame(input_dict)
         
         # -----------------------------------------------
         # Make the prediction

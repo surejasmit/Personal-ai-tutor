@@ -1,12 +1,18 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, Brain, Database, Network, Code, Layers, Monitor, Cpu, ArrowRight, Search } from 'lucide-react';
+import { BookOpen, Brain, Database, Network, Code, Layers, Monitor, Cpu, Search, SlidersHorizontal, ChevronRight } from 'lucide-react';
 import Sidebar from "../components/Dashboard/Sidebar";
+import TopBar from "../components/Dashboard/Topbar";
 
 const TopicSelection = () => {
     const navigate = useNavigate();
     const [topics, setTopics] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [filter, setFilter] = useState('All');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [userName, setUserName] = useState('Student');
+
+    const filters = ['All', 'In Progress', 'Not Started', 'Completed'];
 
     const topicIcons = {
         'AI and ML': Brain,
@@ -22,6 +28,44 @@ const TopicSelection = () => {
         'Operating System': Monitor,
         'Web Development': BookOpen
     };
+
+    const topicColors = {
+        'AI and ML': 'from-purple to-purple-dark',
+        'AIML': 'from-purple to-purple-dark',
+        'Algorithms': 'from-blue-500 to-blue-600',
+        'Computer Networks': 'from-cyan-500 to-cyan-600',
+        'Database': 'from-accent to-accent-dark',
+        'DBMS': 'from-accent to-accent-dark',
+        'Data Structures': 'from-amber-400 to-amber-500',
+        'Object-Oriented Programming': 'from-rose-500 to-rose-600',
+        'OOP': 'from-rose-500 to-rose-600',
+        'Operating Systems': 'from-indigo-500 to-indigo-600',
+        'Operating System': 'from-indigo-500 to-indigo-600',
+        'Web Development': 'from-emerald-500 to-emerald-600',
+    };
+
+    const topicDifficulty = {
+        'Data Structures': 'Beginner',
+        'Algorithms': 'Intermediate',
+        'Web Development': 'Beginner',
+        'Database': 'Beginner',
+        'DBMS': 'Beginner',
+        'Computer Networks': 'Intermediate',
+        'Operating Systems': 'Intermediate',
+        'Operating System': 'Intermediate',
+        'AI and ML': 'Advanced',
+        'AIML': 'Advanced',
+        'Object-Oriented Programming': 'Beginner',
+        'OOP': 'Beginner',
+    };
+
+    useEffect(() => {
+        const userdata = localStorage.getItem('user');
+        if (userdata) {
+            const user = JSON.parse(userdata);
+            setUserName(user.name || user.username || user.email?.split('@')[0] || 'Student');
+        }
+    }, []);
 
     useEffect(() => {
         const fetchTopics = async () => {
@@ -49,94 +93,143 @@ const TopicSelection = () => {
         navigate(`/quiz/${topicId}`);
     };
 
+    const getDifficultyColor = (difficulty) => {
+        switch(difficulty) {
+            case 'Beginner': return 'text-accent bg-accent/10 border-accent/20';
+            case 'Intermediate': return 'text-amber-400 bg-amber-400/10 border-amber-400/20';
+            case 'Advanced': return 'text-purple-light bg-purple/10 border-purple/20';
+            default: return 'text-text-muted bg-white/5 border-white/10';
+        }
+    };
+
     if (loading) {
         return (
-            <div className="flex min-h-screen page-shell">
+            <div className="flex min-h-screen bg-bg-primary text-text-primary">
                 <Sidebar />
-                <main className="flex-1 pb-24 md:ml-64 md:pb-0">
-                    <div className="p-4 sm:p-6 lg:p-8">
-                        <div className="mb-8 h-36 rounded-[2rem] brand-gradient" />
-                        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-                            {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
-                                <div key={item} className="premium-card rounded-3xl p-6">
-                                    <div className="skeleton mb-5 h-12 w-12 rounded-2xl" />
-                                    <div className="skeleton mb-3 h-5 rounded-full" />
-                                    <div className="skeleton h-16 rounded-2xl" />
-                                </div>
-                            ))}
+                <div className="flex-1 ml-56">
+                    <TopBar userName={userName} />
+                    <main className="flex-1 p-8">
+                        <div className="flex items-center justify-center h-64">
+                            <div className="w-8 h-8 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />
                         </div>
-                    </div>
-                </main>
+                    </main>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="flex min-h-screen page-shell">
+        <div className="flex min-h-screen bg-bg-primary text-text-primary">
             <Sidebar />
-            <main className="min-w-0 flex-1 pb-24 md:ml-64 md:pb-0">
-                <div className="space-y-7 p-4 sm:p-6 lg:p-8">
-                    <section className="brand-gradient rounded-[2rem] p-6 text-white shadow-lift sm:p-8">
-                        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-                            <div>
-                                <p className="mb-3 text-sm font-bold uppercase tracking-[0.22em] text-brand-100">Quiz library</p>
-                                <h1 className="text-3xl font-black tracking-tight sm:text-4xl">Choose your next challenge</h1>
-                                <p className="mt-3 max-w-2xl text-sm leading-6 text-brand-50/86 sm:text-base">
-                                    Select a subject and start a focused quiz designed to sharpen recall and reveal gaps.
-                                </p>
-                            </div>
-                            <div className="flex items-center gap-3 rounded-2xl bg-white/14 px-4 py-3 text-sm font-semibold text-white">
-                                <Search size={18} />
-                                {topics.length} topics available
-                            </div>
+            <div className="flex-1 ml-56">
+                <TopBar userName={userName} />
+                <main className="flex-1 p-8">
+                    {/* Header */}
+                    <div className="flex items-center justify-between mb-6">
+                        <div>
+                            <h1 className="text-2xl font-bold mb-1">All Courses</h1>
                         </div>
-                    </section>
+                        <div className="flex items-center gap-3">
+                            {/* Search */}
+                            <div className="flex items-center gap-2 bg-bg-secondary/80 px-3.5 py-2 rounded-xl border border-white/[0.06] w-64">
+                                <Search size={16} className="text-text-muted" />
+                                <input
+                                    type="text"
+                                    placeholder="Search courses..."
+                                    className="bg-transparent outline-none text-sm w-full text-text-primary placeholder:text-text-muted"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
+                            </div>
+                            <button className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-white/[0.06] bg-bg-secondary/80 text-text-muted hover:text-text-secondary hover:border-white/10 transition-colors">
+                                <SlidersHorizontal size={16} />
+                                <span className="text-sm">Filter</span>
+                            </button>
+                        </div>
+                    </div>
 
+                    {/* Filter Tabs */}
+                    <div className="flex items-center gap-2 mb-6">
+                        {filters.map((f) => (
+                            <button
+                                key={f}
+                                onClick={() => setFilter(f)}
+                                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                                    filter === f
+                                        ? 'bg-accent/15 text-accent border border-accent/20'
+                                        : 'text-text-muted hover:text-text-secondary hover:bg-white/[0.04] border border-transparent'
+                                }`}
+                            >
+                                {f}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Topics Grid */}
                     {topics && topics.length > 0 ? (
-                        <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
-                            {topics.map((topic) => {
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                            {topics
+                                .filter(t => searchQuery === '' || t.topic_name.toLowerCase().includes(searchQuery.toLowerCase()))
+                                .map((topic) => {
                                 const Icon = topicIcons[topic.topic_name] || BookOpen;
+                                const colorGrad = topicColors[topic.topic_name] || 'from-accent to-accent-dark';
+                                const difficulty = topicDifficulty[topic.topic_name] || 'Beginner';
+                                const progress = Math.floor(Math.random() * 100);
 
                                 return (
-                                    <button
+                                    <div
                                         key={topic.id}
-                                        type="button"
-                                        className="premium-card group rounded-[1.7rem] p-6 text-left transition duration-300 hover:-translate-y-1 hover:border-brand-300 hover:shadow-lift"
+                                        className="neon-card p-5 cursor-pointer group"
                                         onClick={() => handleStartQuiz(topic.id)}
                                     >
-                                        <div className="mb-5 flex items-center justify-between">
-                                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-100 text-brand-dark transition group-hover:bg-brand group-hover:text-white">
-                                                <Icon size={24} />
-                                            </div>
-                                            <ArrowRight size={18} className="text-slate-300 transition group-hover:translate-x-1 group-hover:text-brand" />
+                                        {/* Color Header */}
+                                        <div className={`w-full h-24 rounded-xl bg-gradient-to-br ${colorGrad} mb-4 flex items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity`}>
+                                            <Icon className="text-white/90" size={28} />
                                         </div>
 
-                                        <h3 className="text-lg font-black text-slate-950">{topic.topic_name}</h3>
-                                        <p className="mt-2 line-clamp-3 min-h-16 text-sm leading-6 text-slate-500">
-                                            {topic.description || 'Test your knowledge with a focused practice set.'}
-                                        </p>
+                                        {/* Topic Name */}
+                                        <h3 className="text-base font-semibold mb-1.5 text-text-primary">{topic.topic_name}</h3>
 
-                                        <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
-                                            <span className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                                        {/* Difficulty Badge */}
+                                        <span className={`inline-block text-[10px] font-semibold px-2 py-0.5 rounded-md border mb-3 ${getDifficultyColor(difficulty)}`}>
+                                            {difficulty}
+                                        </span>
+
+                                        {/* Progress */}
+                                        <div className="mb-3">
+                                            <div className="flex items-center justify-between mb-1">
+                                                <span className="text-xs text-text-muted">{progress}% Complete</span>
+                                            </div>
+                                            <div className="w-full h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+                                                <div
+                                                    className={`h-full rounded-full bg-gradient-to-r ${colorGrad} transition-all duration-700`}
+                                                    style={{ width: `${progress}%` }}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {/* Footer */}
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-xs text-text-muted">
                                                 {topic.question_count || 0} questions
                                             </span>
-                                            <span className="text-sm font-extrabold text-brand">Start Quiz</span>
+                                            <span className="text-accent text-xs font-semibold inline-flex items-center gap-1 group-hover:text-accent-light transition-colors">
+                                                Start <ChevronRight size={14} />
+                                            </span>
                                         </div>
-                                    </button>
+                                    </div>
                                 );
                             })}
-                        </section>
+                        </div>
                     ) : (
-                        <div className="premium-card rounded-[2rem] p-10 text-center">
-                            <p className="text-lg font-bold text-slate-800">No topics available at the moment.</p>
-                            <p className="mt-2 text-sm text-slate-500">Please check back after topics are added.</p>
+                        <div className="flex items-center justify-center py-20">
+                            <p className="text-text-muted text-lg">No courses available at the moment.</p>
                         </div>
                     )}
-                </div>
-            </main>
+                </main>
+            </div>
         </div>
     );
 };
 
 export default TopicSelection;
-

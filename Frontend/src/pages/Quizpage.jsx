@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { CheckCircle2, Clock, Trophy } from "lucide-react";
+import { Clock, ChevronLeft, ChevronRight, CheckCircle, AlertCircle, Lightbulb } from "lucide-react";
 import Sidebar from "../components/Dashboard/Sidebar";
+import TopBar from "../components/Dashboard/Topbar";
 
 const QuizPage = () => {
   const { topicId } = useParams();
@@ -13,6 +14,16 @@ const QuizPage = () => {
   const [timeLeft, setTimeLeft] = useState(600);
   const [submitted, setSubmitted] = useState(false);
   const [results, setResults] = useState(null);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [userName, setUserName] = useState('Student');
+
+  useEffect(() => {
+    const userdata = localStorage.getItem('user');
+    if (userdata) {
+      const user = JSON.parse(userdata);
+      setUserName(user.name || user.username || user.email?.split('@')[0] || 'Student');
+    }
+  }, []);
 
   const submitQuiz = useCallback(async () => {
     if (submitted || quizData.length === 0) return;
@@ -110,7 +121,7 @@ const QuizPage = () => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
 
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, "0")}`;
   };
 
   const handleAnswerSelect = (questionId, selectedAnswer) => {
@@ -133,150 +144,193 @@ const QuizPage = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen page-shell">
+      <div className="flex min-h-screen bg-bg-primary text-text-primary">
         <Sidebar />
-
-        <main className="flex-1 pb-24 md:ml-64 md:pb-0">
-          <div className="space-y-5 p-4 sm:p-6 lg:p-8">
-            <div className="skeleton h-32 rounded-[2rem]" />
-            {[1, 2, 3].map((item) => (
-              <div key={item} className="premium-card rounded-[2rem] p-6">
-                <div className="skeleton mb-5 h-6 rounded-full" />
-                <div className="space-y-3">
-                  <div className="skeleton h-12 rounded-2xl" />
-                  <div className="skeleton h-12 rounded-2xl" />
-                  <div className="skeleton h-12 rounded-2xl" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </main>
+        <div className="flex-1 ml-56">
+          <TopBar userName={userName} />
+          <main className="flex-1 p-8">
+            <div className="flex items-center justify-center h-64">
+              <div className="w-8 h-8 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />
+            </div>
+          </main>
+        </div>
       </div>
     );
   }
 
-  const answeredCount = Object.keys(answers).length;
-  const progress = quizData.length ? (answeredCount / quizData.length) * 100 : 0;
+  const currentQ = quizData[currentQuestion];
+  const qId = currentQ?.question_id || currentQ?.id;
+  const options = currentQ ? [
+    currentQ.option_a || currentQ.option1,
+    currentQ.option_b || currentQ.option2,
+    currentQ.option_c || currentQ.option3,
+    currentQ.option_d || currentQ.option4,
+  ] : [];
 
   return (
-    <div className="flex min-h-screen page-shell">
+    <div className="flex min-h-screen bg-bg-primary text-text-primary">
       <Sidebar />
 
-      <main className="min-w-0 flex-1 pb-24 md:ml-64 md:pb-0">
-        <div className="space-y-6 p-4 sm:p-6 lg:p-8">
-          <section className="brand-gradient rounded-[2rem] p-6 text-white shadow-lift sm:p-8">
-            <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-              <div>
-                <p className="mb-3 text-sm font-bold uppercase tracking-[0.22em] text-brand-100">Assessment</p>
-                <h1 className="text-3xl font-black tracking-tight sm:text-4xl">Quiz Session</h1>
-                <p className="mt-3 max-w-2xl text-sm leading-6 text-brand-50/86 sm:text-base">
-                  Answer every question before submitting. Your result updates your learning progress.
-                </p>
-              </div>
+      <div className="flex-1 ml-56">
+        <TopBar userName={userName} />
+        <main className="flex-1 p-8 max-w-4xl">
+          {/* Header */}
+          <div className="flex items-center gap-3 mb-6">
+            <button
+              onClick={() => navigate('/quizzes')}
+              className="flex items-center gap-1.5 text-sm text-text-muted hover:text-text-primary transition-colors"
+            >
+              <ChevronLeft size={16} />
+              Back to Quizzes
+            </button>
+          </div>
 
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-2xl font-bold mb-1">Data Structures Quiz</h1>
               {!submitted && (
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-2xl bg-white/14 px-4 py-3">
-                    <div className="flex items-center gap-2 text-sm font-bold">
-                      <Clock size={18} />
-                      {formatTime(timeLeft)}
-                    </div>
-                    <p className="mt-1 text-xs text-brand-100">Time remaining</p>
-                  </div>
-                  <div className="rounded-2xl bg-white/14 px-4 py-3">
-                    <div className="text-sm font-bold">{answeredCount}/{quizData.length}</div>
-                    <p className="mt-1 text-xs text-brand-100">Answered</p>
-                  </div>
-                </div>
+                <p className="text-sm text-text-muted">
+                  Question {currentQuestion + 1} of {quizData.length}
+                </p>
               )}
             </div>
-
             {!submitted && (
-              <div className="mt-6 h-2 rounded-full bg-white/18">
-                <div className="h-full rounded-full bg-white transition-all" style={{ width: `${progress}%` }} />
+              <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-bg-secondary border border-white/[0.06]">
+                <Clock size={16} className="text-accent" />
+                <span className="text-sm font-mono font-semibold text-accent">{formatTime(timeLeft)}</span>
               </div>
             )}
-          </section>
+          </div>
 
+          {/* Progress bar */}
+          {!submitted && (
+            <div className="w-full h-1 rounded-full bg-white/[0.06] mb-8 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-accent to-accent-light transition-all duration-500"
+                style={{ width: `${((currentQuestion + 1) / quizData.length) * 100}%` }}
+              />
+            </div>
+          )}
+
+          {/* Results */}
           {submitted && results && (
-            <section className="premium-card rounded-[2rem] p-8 text-center">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-brand-100 text-brand-dark">
-                <Trophy size={30} />
+            <div className="mb-8 neon-card neon-border-green p-8 text-center">
+              <div className="w-16 h-16 rounded-full bg-accent/15 flex items-center justify-center mx-auto mb-4">
+                <CheckCircle size={32} className="text-accent" />
               </div>
-              <h2 className="text-2xl font-black text-slate-950">Quiz Completed</h2>
-              <p className="mt-3 text-5xl font-black text-brand">
+              <h2 className="text-2xl font-bold mb-2">Quiz Completed!</h2>
+              <p className="text-5xl text-accent font-bold text-glow-green mb-1">
                 {results.score}/{results.totalQuestions}
               </p>
-              <p className="mt-2 text-slate-500">{results.percentage}% Score</p>
-              <button
-                onClick={() => navigate("/dashboard")}
-                className="btn-primary mt-6 px-6 py-3"
-              >
-                Go Dashboard
-              </button>
-            </section>
+              <p className="text-text-muted mb-6">{results.percentage}% Score</p>
+              <div className="flex items-center justify-center gap-3">
+                <button
+                  onClick={() => navigate("/dashboard")}
+                  className="px-6 py-3 rounded-xl btn-neon font-semibold"
+                >
+                  Go to Dashboard
+                </button>
+                <button
+                  onClick={() => navigate("/quizzes")}
+                  className="px-6 py-3 rounded-xl border border-white/[0.08] text-text-secondary hover:bg-white/[0.04] transition-colors"
+                >
+                  Try Another Quiz
+                </button>
+              </div>
+            </div>
           )}
 
-          <section className="space-y-5">
-            {quizData.map((question, index) => {
-              const qId = question.question_id || question.id;
-              const options = [
-                question.option_a || question.option1,
-                question.option_b || question.option2,
-                question.option_c || question.option3,
-                question.option_d || question.option4,
-              ];
+          {/* Current Question */}
+          {!submitted && currentQ && (
+            <div className="neon-card p-6 mb-6">
+              <h2 className="text-lg font-semibold mb-6 leading-relaxed">
+                {currentQ.question_text || currentQ.question}
+              </h2>
 
-              return (
-                <div key={qId} className="premium-card rounded-[2rem] p-5 sm:p-6">
-                  <div className="mb-5 flex gap-4">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-sm font-black text-white">
-                      {index + 1}
-                    </div>
-                    <h2 className="pt-1 text-base font-black leading-7 text-slate-950 sm:text-lg">
-                      {question.question_text || question.question}
-                    </h2>
-                  </div>
+              <div className="space-y-3">
+                {options.map((option, idx) => {
+                  const labels = ['A', 'B', 'C', 'D'];
+                  const isSelected = answers[qId] === option;
+                  return (
+                    <label
+                      key={option}
+                      className={`flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
+                        isSelected
+                          ? "bg-accent/10 border-accent/30"
+                          : "border-white/[0.06] hover:border-white/[0.12] hover:bg-white/[0.02]"
+                      }`}
+                    >
+                      <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                        isSelected
+                          ? 'border-accent bg-accent text-bg-primary'
+                          : 'border-white/20 text-text-muted'
+                      }`}>
+                        <span className="text-xs font-bold">{labels[idx]}</span>
+                      </div>
+                      <input
+                        type="radio"
+                        name={`question-${qId}`}
+                        value={option}
+                        checked={isSelected}
+                        onChange={() => handleAnswerSelect(qId, option)}
+                        disabled={submitted}
+                        className="sr-only"
+                      />
+                      <span className={`text-sm ${isSelected ? 'text-text-primary font-medium' : 'text-text-secondary'}`}>{option}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
-                  <div className="grid gap-3">
-                    {options.map((option, optionIndex) => (
-                      <label
-                        key={`${qId}-${optionIndex}`}
-                        className={`flex cursor-pointer items-center gap-3 rounded-2xl border p-4 text-sm font-semibold transition ${
-                          answers[qId] === option
-                            ? "border-brand-400 bg-brand-50 text-brand-deep shadow-sm"
-                            : "border-slate-200 bg-white text-slate-700 hover:border-brand-300 hover:bg-brand-50/60"
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          name={`question-${qId}`}
-                          value={option}
-                          checked={answers[qId] === option}
-                          onChange={() => handleAnswerSelect(qId, option)}
-                          disabled={submitted}
-                          className="h-4 w-4 accent-brand"
-                        />
-                        <span className="flex-1">{option}</span>
-                        {answers[qId] === option && <CheckCircle2 size={18} className="text-brand" />}
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </section>
+          {/* Explanation Box (shown after submission) */}
+          {submitted && currentQ && (
+            <div className="neon-card neon-border-green p-5 mb-6">
+              <div className="flex items-center gap-2 mb-3">
+                <Lightbulb size={18} className="text-accent" />
+                <span className="text-sm font-semibold text-accent">Explanation</span>
+              </div>
+              <p className="text-sm text-text-secondary leading-relaxed">
+                Review your answers above. Each question tests a fundamental concept. Keep practicing to improve your understanding.
+              </p>
+            </div>
+          )}
 
+          {/* Navigation */}
           {!submitted && (
-            <button onClick={handleSubmit} className="btn-primary px-8 py-4">
-              Submit Quiz
-            </button>
+            <div className="flex items-center justify-between">
+              <button
+                onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
+                disabled={currentQuestion === 0}
+                className="px-5 py-2.5 rounded-xl border border-white/[0.08] text-text-secondary hover:bg-white/[0.04] transition-colors disabled:opacity-30 disabled:cursor-not-allowed inline-flex items-center gap-2"
+              >
+                <ChevronLeft size={16} />
+                Previous
+              </button>
+
+              {currentQuestion === quizData.length - 1 ? (
+                <button
+                  onClick={handleSubmit}
+                  className="px-6 py-2.5 rounded-xl btn-neon font-semibold"
+                >
+                  Submit Quiz
+                </button>
+              ) : (
+                <button
+                  onClick={() => setCurrentQuestion(Math.min(quizData.length - 1, currentQuestion + 1))}
+                  className="px-5 py-2.5 rounded-xl btn-neon font-semibold inline-flex items-center gap-2"
+                >
+                  Next
+                  <ChevronRight size={16} />
+                </button>
+              )}
+            </div>
           )}
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 };
 
 export default QuizPage;
-

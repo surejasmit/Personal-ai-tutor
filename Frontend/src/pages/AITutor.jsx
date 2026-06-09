@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bot, Sparkles, BookOpen, Target, ArrowRight, RefreshCw, AlertCircle, MessageSquareText } from 'lucide-react';
+import { Bot, Sparkles, BookOpen, Target, ArrowRight, RefreshCw, AlertCircle } from 'lucide-react';
 import Sidebar from '../components/Dashboard/Sidebar';
 import TopBar from '../components/Dashboard/Topbar';
 
@@ -129,111 +129,116 @@ const AITutor = () => {
   };
 
   const handleQuickPrompt = (prompt) => {
-    navigate('/topics', { state: { prompt } });
+    navigate('/chatbot', { state: { prompt } });
   };
 
   return (
-    <div className="flex min-h-screen page-shell">
+    <div className="flex min-h-screen bg-bg-primary text-text-primary">
       <Sidebar />
 
-      <div className="min-w-0 flex-1 pb-24 md:ml-64 md:pb-0">
+      <div className="flex-1 ml-56">
         <TopBar userName={userName} />
 
-        <main className="space-y-6 p-4 sm:p-6 lg:p-8">
-          <section className="brand-gradient rounded-[2rem] p-6 text-white shadow-lift sm:p-8">
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+        <main className="p-8 space-y-6">
+          {/* Hero Section */}
+          <section className="neon-card p-8">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
               <div className="max-w-2xl">
-                <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/14 px-3 py-1.5 text-sm font-bold">
-                  <Bot size={16} />
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 text-accent text-xs font-medium mb-4">
+                  <Bot size={14} />
                   AI Tutor
                 </div>
 
-                <h1 className="text-3xl font-black leading-tight tracking-tight md:text-4xl">
-                  Welcome back, {userName || 'Student'}
+                <h1 className="text-2xl md:text-3xl font-bold leading-tight">
+                  Welcome back, <span className="text-accent text-glow-green">{userName || 'Student'}</span>
                 </h1>
-                <p className="mt-3 max-w-xl text-sm leading-6 text-brand-50/86 md:text-base">
-                  Your AI tutor uses quiz performance to recommend what to study next and keep your routine focused.
+                <p className="mt-3 text-text-muted text-sm md:text-base max-w-xl leading-relaxed">
+                  Your AI tutor uses your quiz performance to recommend what to study next and helps you build a focused learning routine.
                 </p>
 
                 <div className="mt-6 flex flex-wrap gap-3">
                   <button
                     type="button"
                     onClick={() => navigate('/topics')}
-                    className="inline-flex items-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-extrabold text-brand-dark shadow-lg transition hover:-translate-y-1"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl btn-neon font-semibold"
                   >
                     Start a Quiz
-                    <ArrowRight size={18} />
+                    <ArrowRight size={16} />
                   </button>
 
                   <button
                     type="button"
                     onClick={handleRefresh}
                     disabled={refreshing}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-white/18 bg-white/10 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-1 hover:bg-white/16 disabled:opacity-60"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/[0.08] text-text-secondary hover:bg-white/[0.04] transition-colors disabled:opacity-50"
                   >
-                    <RefreshCw size={18} className={refreshing ? 'animate-spin' : ''} />
+                    <RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} />
                     {refreshing ? 'Refreshing...' : 'Refresh'}
                   </button>
                 </div>
               </div>
 
-              <div className="dark-card w-full rounded-[1.7rem] p-5 lg:w-80">
-                <p className="text-sm font-bold text-brand-200">Today's focus</p>
-                <h2 className="mt-2 text-xl font-black text-white">Study smarter, not longer</h2>
-                <p className="mt-3 text-sm leading-6 text-slate-300">
-                  The tutor highlights a next step based on current progress and recent quiz activity.
+              <div className="w-full lg:w-72 neon-card p-5">
+                <p className="text-xs text-text-muted uppercase tracking-wider mb-2">Today&apos;s focus</p>
+                <h2 className="text-lg font-bold mb-2">Study smarter, not longer</h2>
+                <p className="text-xs text-text-secondary leading-relaxed">
+                  The tutor highlights a next step based on your current progress and recent quiz activity.
                 </p>
               </div>
             </div>
           </section>
 
+          {/* Error */}
           {error && (
-            <div className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-red-600">
-              <AlertCircle size={18} className="mt-0.5" />
-              <p className="text-sm font-semibold">{error}</p>
+            <div className="flex items-start gap-3 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-red-300">
+              <AlertCircle size={18} className="mt-0.5 flex-shrink-0" />
+              <p className="text-sm">{error}</p>
             </div>
           )}
 
+          {/* Prompt Cards */}
           <section className="grid gap-5 lg:grid-cols-3">
             {promptCards.map((card) => {
               const Icon = card.icon;
               return (
-                <div key={card.title} className="premium-card rounded-[1.7rem] p-6 transition hover:-translate-y-1 hover:shadow-lift">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-100 text-brand-dark">
-                    <Icon size={22} />
+                <div key={card.title} className="neon-card p-5">
+                  <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center mb-4">
+                    <Icon size={18} className="text-accent" />
                   </div>
-                  <h3 className="text-lg font-black text-slate-950">{card.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-500">{card.description}</p>
+                  <h3 className="text-base font-semibold mb-1.5">{card.title}</h3>
+                  <p className="text-xs text-text-muted leading-relaxed">{card.description}</p>
                 </div>
               );
             })}
           </section>
 
-          <section className="grid gap-5 xl:grid-cols-[1.5fr_1fr]">
-            <div className="premium-card rounded-[2rem] p-6">
-              <div className="mb-5 flex items-center justify-between gap-4">
+          {/* Recommendation + Quick Prompts */}
+          <section className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
+            <div className="neon-card p-6">
+              <div className="flex items-center justify-between gap-4 mb-5">
                 <div>
-                  <h2 className="text-xl font-black text-slate-950">Personalized Recommendation</h2>
-                  <p className="mt-1 text-sm text-slate-500">Based on your latest quiz activity</p>
+                  <h2 className="text-lg font-bold">Personalized Recommendation</h2>
+                  <p className="text-xs text-text-muted mt-1">
+                    Based on your latest quiz activity
+                  </p>
                 </div>
-                <Sparkles className="text-brand" size={22} />
+                <Sparkles className="text-accent" size={20} />
               </div>
 
               {loading ? (
-                <div className="space-y-4">
-                  <div className="skeleton h-32 rounded-3xl" />
-                  <div className="skeleton h-12 rounded-2xl" />
+                <div className="flex items-center justify-center h-24">
+                  <div className="w-8 h-8 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />
                 </div>
               ) : recommendation?.hasRecommendation ? (
                 <div className="space-y-4">
-                  <div className="rounded-3xl border border-brand-200 bg-brand-50 p-5">
-                    <p className="mb-2 text-xs font-black uppercase tracking-[0.22em] text-brand">
+                  <div className="rounded-xl neon-border-green bg-accent/5 p-5">
+                    <p className="text-[10px] uppercase tracking-[0.2em] text-accent mb-2 font-semibold">
                       Recommended next topic
                     </p>
-                    <h3 className="text-2xl font-black text-slate-950">
+                    <h3 className="text-xl font-bold text-text-primary">
                       {recommendation.recommendation.recommended_topic}
                     </h3>
-                    <p className="mt-3 text-sm leading-6 text-slate-600">
+                    <p className="mt-3 text-sm text-text-secondary leading-relaxed">
                       {recommendation.recommendation.recommendation_reason}
                     </p>
                   </div>
@@ -241,30 +246,30 @@ const AITutor = () => {
                   <div className="flex flex-wrap gap-3">
                     <button
                       type="button"
-                      onClick={() => navigate('/topics')}
-                      className="btn-primary px-5 py-3"
+                      onClick={() => navigate('/courses')}
+                      className="px-5 py-2.5 rounded-xl btn-neon font-semibold"
                     >
                       Continue Learning
                     </button>
                     <button
                       type="button"
                       onClick={() => navigate('/dashboard')}
-                      className="btn-secondary px-5 py-3 text-sm text-slate-700"
+                      className="px-5 py-2.5 rounded-xl border border-white/[0.08] text-text-secondary hover:bg-white/[0.04] transition-colors"
                     >
                       View Dashboard
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
-                  <h3 className="text-lg font-black text-slate-950">No recommendation yet</h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-500">
+                <div className="rounded-xl bg-bg-card border border-white/[0.06] p-5">
+                  <h3 className="text-base font-semibold mb-2">No recommendation yet</h3>
+                  <p className="text-sm text-text-muted leading-relaxed">
                     Take a quiz to unlock your first personalized AI recommendation.
                   </p>
                   <button
                     type="button"
                     onClick={() => navigate('/topics')}
-                    className="btn-primary mt-4 px-5 py-3"
+                    className="mt-4 px-5 py-2.5 rounded-xl btn-neon font-semibold"
                   >
                     Choose a Topic
                   </button>
@@ -272,20 +277,17 @@ const AITutor = () => {
               )}
             </div>
 
-            <div className="premium-card rounded-[2rem] p-6">
-              <div className="mb-4 flex items-center gap-2">
-                <MessageSquareText size={21} className="text-brand" />
-                <h2 className="text-xl font-black text-slate-950">Quick Prompts</h2>
-              </div>
+            <div className="neon-card p-6">
+              <h2 className="text-lg font-bold mb-4">Quick Prompts</h2>
               <div className="space-y-3">
                 {quickPrompts.map((prompt) => (
                   <button
                     key={prompt}
                     type="button"
                     onClick={() => handleQuickPrompt(prompt)}
-                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-deep"
+                    className="w-full text-left px-4 py-3 rounded-xl border border-white/[0.06] hover:border-accent/20 hover:bg-accent/5 transition-all"
                   >
-                    {prompt}
+                    <span className="text-sm text-text-secondary">{prompt}</span>
                   </button>
                 ))}
               </div>
@@ -298,4 +300,3 @@ const AITutor = () => {
 };
 
 export default AITutor;
-
