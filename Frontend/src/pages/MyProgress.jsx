@@ -107,29 +107,62 @@ const MiniBarChart = ({ current, previous, label }) => {
   );
 };
 
-// ─── Activity Heatmap (GitHub-style) ─────────────────────────
+// ─── Activity Heatmap (GitHub-style — full year) ─────────────
 const ActivityHeatmap = ({ data = [] }) => {
-  const cells = useMemo(() => {
+  const { cells, weeks, monthLabels } = useMemo(() => {
+    // Build a map of date → quiz count
     const map = {};
     data.forEach((d) => {
       map[d.date?.split("T")[0]] = Number(d.quiz_count);
     });
 
-    const result = [];
+    // Generate 365 days of cells
+    const allCells = [];
     const today = new Date();
-    for (let i = 29; i >= 0; i--) {
+    for (let i = 364; i >= 0; i--) {
       const d = new Date(today);
       d.setDate(d.getDate() - i);
-      const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, "0");
-      const day = String(d.getDate()).padStart(2, "0");
-      const key = `${year}-${month}-${day}`;
-      result.push({ date: key, count: map[key] || 0, day: d.getDay() });
+      const key = d.toISOString().split("T")[0];
+      allCells.push({ date: key, count: map[key] || 0, dayOfWeek: d.getDay(), dateObj: d });
     }
-    return result;
+
+    // Pad the first week so column 0 starts on Sunday
+    const firstDay = allCells[0].dayOfWeek;
+    const padded = [];
+    for (let i = 0; i < firstDay; i++) {
+      padded.push({ date: null, count: -1, dayOfWeek: i, dateObj: null }); // -1 = empty cell
+    }
+    const combined = [...padded, ...allCells];
+
+    // Split into weeks (columns)
+    const weekCols = [];
+    for (let i = 0; i < combined.length; i += 7) {
+      weekCols.push(combined.slice(i, i + 7));
+    }
+
+    // Build month labels with their column positions
+    const labels = [];
+    let lastMonth = -1;
+    weekCols.forEach((week, colIdx) => {
+      const realCells = week.filter((c) => c.dateObj);
+      if (realCells.length > 0) {
+        const firstDate = realCells[0].dateObj;
+        const month = firstDate.getMonth();
+        if (month !== lastMonth) {
+          labels.push({
+            label: firstDate.toLocaleString("en-US", { month: "short" }),
+            col: colIdx,
+          });
+          lastMonth = month;
+        }
+      }
+    });
+
+    return { cells: allCells, weeks: weekCols, monthLabels: labels };
   }, [data]);
 
   const getColor = (count) => {
+    if (count < 0) return "transparent";
     if (count === 0) return "rgba(255,255,255,0.04)";
     if (count === 1) return "rgba(0,217,126,0.25)";
     if (count === 2) return "rgba(0,217,126,0.45)";
@@ -141,70 +174,137 @@ const ActivityHeatmap = ({ data = [] }) => {
   const totalQuizzes = cells.reduce((s, c) => s + c.count, 0);
   const activeDays = cells.filter((c) => c.count > 0).length;
 
+  // Calculate streaks
+  const streakInfo = useMemo(() => {
+    let currentStreak = 0;
+    let longestStreak = 0;
+    let tempStreak = 0;
+
+    // Walk from oldest to newest
+    for (let i = 0; i < cells.length; i++) {
+      if (cells[i].count > 0) {
+        tempStreak++;
+        if (tempStreak > longestStreak) longestStreak = tempStreak;
+      } else {
+        tempStreak = 0;
+      }
+    }
+
+    // Current streak: walk back from today
+    for (let i = cells.length - 1; i >= 0; i--) {
+      if (cells[i].count > 0) {
+        currentStreak++;
+      } else {
+        break;
+      }
+    }
+
+    return { currentStreak, longestStreak };
+  }, [cells]);
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
+      {/* Header + stats */}
+      <div className="flex items-center justify-between mb-5">
         <div>
-          <h3 className="text-base font-semibold text-text-primary">
+          <h3 className="text-base font-semibold text-text-primary flex items-center gap-2">
+            <Flame size={18} className="text-accent" />
             Activity Heatmap
           </h3>
-          <p className="text-xs text-text-muted mt-0.5">Last 30 days</p>
+          <p className="text-xs text-text-muted mt-0.5">
+            {totalQuizzes} quizzes in the last year
+          </p>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="text-right">
+        <div className="flex items-center gap-5">
+          <div className="text-center">
             <p className="text-lg font-bold text-text-primary">{totalQuizzes}</p>
-            <p className="text-[10px] text-text-muted">Total quizzes</p>
+            <p className="text-[10px] text-text-muted">Total</p>
           </div>
-          <div className="text-right">
+          <div className="text-center">
             <p className="text-lg font-bold text-accent">{activeDays}</p>
             <p className="text-[10px] text-text-muted">Active days</p>
+          </div>
+          <div className="text-center">
+            <p className="text-lg font-bold text-purple-light">{streakInfo.currentStreak}</p>
+            <p className="text-[10px] text-text-muted">Current streak</p>
+          </div>
+          <div className="text-center">
+            <p className="text-lg font-bold text-amber-400">{streakInfo.longestStreak}</p>
+            <p className="text-[10px] text-text-muted">Longest streak</p>
           </div>
         </div>
       </div>
 
-      <div className="flex gap-1.5">
-        {/* Day labels */}
-        <div className="flex flex-col gap-[3px] mr-1 pt-5">
-          {dayLabels.map((label, i) => (
-            <span key={i} className="text-[9px] text-text-muted h-[18px] leading-[18px]">
-              {label}
-            </span>
-          ))}
-        </div>
+      {/* Heatmap grid */}
+      <div className="overflow-x-auto pb-2">
+        <div className="min-w-[720px]">
+          {/* Month labels row */}
+          <div className="flex gap-[3px] ml-8 mb-1">
+            {weeks.map((_, weekIdx) => {
+              const monthLabel = monthLabels.find((m) => m.col === weekIdx);
+              return (
+                <div key={weekIdx} className="flex-1 min-w-0">
+                  {monthLabel && (
+                    <span className="text-[10px] text-text-muted font-medium">
+                      {monthLabel.label}
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
 
-        {/* Grid – 5 columns (weeks) */}
-        <div className="flex gap-[3px] flex-1">
-          {Array.from({ length: Math.ceil(cells.length / 7) }, (_, weekIdx) => (
-            <div key={weekIdx} className="flex flex-col gap-[3px]">
-              {cells
-                .slice(weekIdx * 7, weekIdx * 7 + 7)
-                .map((cell, dayIdx) => (
-                  <div
-                    key={dayIdx}
-                    className="group relative"
-                  >
-                    <div
-                      className="w-[18px] h-[18px] rounded-[4px] transition-all duration-200 hover:ring-1 hover:ring-accent/50 hover:scale-125 cursor-pointer"
-                      style={{ background: getColor(cell.count) }}
-                    />
-                    {/* Tooltip */}
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50">
-                      <div className="bg-bg-card border border-white/10 rounded-lg px-3 py-1.5 text-xs whitespace-nowrap shadow-xl">
-                        <span className="text-text-primary font-medium">
-                          {cell.count} quiz{cell.count !== 1 ? "zes" : ""}
-                        </span>
-                        <span className="text-text-muted ml-1.5">
-                          {new Date(cell.date).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                          })}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+          <div className="flex gap-[3px]">
+            {/* Day labels */}
+            <div className="flex flex-col gap-[3px] mr-1 shrink-0 w-6">
+              {dayLabels.map((label, i) => (
+                <span
+                  key={i}
+                  className="text-[9px] text-text-muted leading-none flex items-center"
+                  style={{ height: "13px" }}
+                >
+                  {label}
+                </span>
+              ))}
             </div>
-          ))}
+
+            {/* Weeks grid */}
+            <div className="flex gap-[3px] flex-1">
+              {weeks.map((week, weekIdx) => (
+                <div key={weekIdx} className="flex flex-col gap-[3px] flex-1 min-w-0">
+                  {week.map((cell, dayIdx) => (
+                    <div key={dayIdx} className="group relative">
+                      <div
+                        className="w-full rounded-[3px] transition-all duration-150 hover:ring-1 hover:ring-accent/50 hover:scale-110 cursor-pointer"
+                        style={{
+                          background: getColor(cell.count),
+                          aspectRatio: "1",
+                        }}
+                      />
+                      {/* Tooltip */}
+                      {cell.date && (
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 pointer-events-none">
+                          <div className="bg-bg-card border border-white/10 rounded-lg px-3 py-1.5 text-xs whitespace-nowrap shadow-xl">
+                            <span className="text-text-primary font-semibold">
+                              {cell.count} quiz{cell.count !== 1 ? "zes" : ""}
+                            </span>
+                            <span className="text-text-muted ml-1.5">
+                              {new Date(cell.date).toLocaleDateString("en-US", {
+                                weekday: "short",
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              })}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -669,10 +769,13 @@ const MyProgress = () => {
             )}
           </div>
 
-          {/* ══════════════ SKILLS + HEATMAP ROW ══════════════ */}
-          <div className="grid grid-cols-5 gap-6 mb-8">
-            {/* Skills - 3 columns */}
-            <div className="col-span-3 bg-bg-secondary rounded-2xl p-6 border border-white/[0.06]">
+          {/* ══════════════ HEATMAP — FULL WIDTH ══════════════ */}
+          <div className="bg-bg-secondary rounded-2xl p-6 border border-white/[0.06] mb-8">
+            <ActivityHeatmap data={heatmap} />
+          </div>
+
+          {/* ══════════════ SKILL BREAKDOWN ══════════════ */}
+          <div className="bg-bg-secondary rounded-2xl p-6 border border-white/[0.06] mb-8">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-2">
                   <BarChart3 size={18} className="text-accent" />
@@ -685,12 +788,6 @@ const MyProgress = () => {
                 )}
               </div>
               <SkillBars skills={skills} />
-            </div>
-
-            {/* Heatmap - 2 columns */}
-            <div className="col-span-2 bg-bg-secondary rounded-2xl p-6 border border-white/[0.06]">
-              <ActivityHeatmap data={heatmap} />
-            </div>
           </div>
 
           {/* ══════════════ TOPIC JOURNEY ══════════════ */}

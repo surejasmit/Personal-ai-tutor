@@ -231,7 +231,7 @@ const QuizPage = () => {
                   Go to Dashboard
                 </button>
                 <button
-                  onClick={() => navigate("/quizzes")}
+                  onClick={() => navigate("/topics")}
                   className="px-6 py-3 rounded-xl border border-white/[0.08] text-text-secondary hover:bg-white/[0.04] transition-colors"
                 >
                   Try Another Quiz

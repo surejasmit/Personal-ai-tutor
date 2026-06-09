@@ -1,8 +1,6 @@
---
 -- PostgreSQL database dump
---
 
-\restrict ZwCKxyNioAhBbpEwzet544kLRclOxnyZGv1xbwpYymaClts0tH6t6jTyqo1IZwJ
+-- \restrict ZwCKxyNioAhBbpEwzet544kLRclOxnyZGv1xbwpYymaClts0tH6t6jTyqo1IZwJ
 
 -- Dumped from database version 18.3
 -- Dumped by pg_dump version 18.3

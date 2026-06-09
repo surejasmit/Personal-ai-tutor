@@ -185,7 +185,7 @@ const Dashboard = () => {
                                 </p>
                             </div>
                             <button
-                                onClick={() => navigate('/quizzes')}
+                                onClick={() => navigate('/topics')}
                                 className="px-5 py-2.5 rounded-xl btn-neon font-semibold flex-shrink-0 flex items-center gap-2 relative z-10"
                             >
                                 Start Quiz

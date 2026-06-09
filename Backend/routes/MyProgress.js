@@ -5,19 +5,21 @@ const pool = require('../config/db');
 router.get('/skill-reader/:UserId',async (req, res) => {
     try{
         const {UserId} = req.params;
+        console.log('[skill-reader] UserId:', UserId);
 
         const result = await pool.query(
             `select t.topic_name,
-                ROUND(avg(qr.precentage)) as avg_score,
+                ROUND(avg(qr.percentage)) as avg_score,
                 count(qr.id) as attempts
                 from quiz_results qr
-                join topic t on qr.topic_id = t.id
+                join topics t on qr.topic_id = t.id
                 where qr.user_id = $1
                 group by t.topic_name
                 order by avg_score desc
             `,[UserId]
         );
 
+        console.log('[skill-reader] rows:', JSON.stringify(result.rows));
         res.json(
             {skills: result.rows}
         );
@@ -42,7 +44,7 @@ router.get('/heatmap/:UserId',async (req, res) => {
                 count(id) as quiz_count
             from quiz_results
             where user_id = $1
-            and created_at >= NOW() - interval '30 days'
+            and created_at >= NOW() - interval '365 days'
             group by TO_CHAR(created_at, 'YYYY-MM-DD')
             order by date asc
             `,[UserId]
