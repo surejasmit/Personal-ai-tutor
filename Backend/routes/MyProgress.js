@@ -8,10 +8,10 @@ router.get('/skill-reader/:UserId',async (req, res) => {
 
         const result = await pool.query(
             `select t.topic_name,
-                ROUND(avg(qr.precentage)) as avg_score,
+                ROUND(avg(qr.percentage)) as avg_score,
                 count(qr.id) as attempts
                 from quiz_results qr
-                join topic t on qr.topic_id = t.id
+                join topics t on qr.topic_id = t.id
                 where qr.user_id = $1
                 group by t.topic_name
                 order by avg_score desc
