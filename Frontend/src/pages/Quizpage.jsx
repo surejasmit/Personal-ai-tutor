@@ -3,11 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Clock, ChevronLeft, ChevronRight, CheckCircle, AlertCircle, Lightbulb } from "lucide-react";
 import Sidebar from "../components/Dashboard/Sidebar";
 import TopBar from "../components/Dashboard/Topbar";
-
+import { useLocation } from "react-router-dom";
 const QuizPage = () => {
   const { topicId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
+  const [topicName, setTopicName] = useState(() => location.state?.topicName || "");
   const [loading, setLoading] = useState(true);
   const [quizData, setQuizData] = useState([]);
   const [answers, setAnswers] = useState({});
@@ -83,6 +85,9 @@ const QuizPage = () => {
 
         if (response.ok) {
           setQuizData(data.questions || data);
+          if (data.topicName) {
+            setTopicName(data.topicName);
+          }
         } else {
           alert(data.error || "Failed to load quiz");
           navigate("/dashboard");
@@ -187,7 +192,7 @@ const QuizPage = () => {
 
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold mb-1">Data Structures Quiz</h1>
+              <h1 className="text-2xl font-bold mb-1">{topicName}</h1>
               {!submitted && (
                 <p className="text-sm text-text-muted">
                   Question {currentQuestion + 1} of {quizData.length}

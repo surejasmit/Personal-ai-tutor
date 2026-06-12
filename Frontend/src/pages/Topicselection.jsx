@@ -89,8 +89,8 @@ const TopicSelection = () => {
         fetchTopics();
     }, []);
 
-    const handleStartQuiz = (topicId) => {
-        navigate(`/quiz/${topicId}`);
+    const handleStartQuiz = (topic) => {
+        navigate(`/quiz/${topic.id}`, { state: { topicName: topic.topic_name } });
     };
 
     const getDifficultyColor = (difficulty) => {
@@ -180,7 +180,7 @@ const TopicSelection = () => {
                                     <div
                                         key={topic.id}
                                         className="neon-card p-5 cursor-pointer group"
-                                        onClick={() => handleStartQuiz(topic.id)}
+                                        onClick={() => handleStartQuiz(topic)}
                                     >
                                         {/* Color Header */}
                                         <div className={`w-full h-24 rounded-xl bg-gradient-to-br ${colorGrad} mb-4 flex items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity`}>

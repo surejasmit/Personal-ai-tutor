@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const { GoogleGenAI } = require('@google/genai');
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_MODEL = 'gemini-2.0-flash';
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`;
+
+const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
 const SYSTEM_INSTRUCTION = `You are an expert AI tutor for students. Your name is "AI Tutor".
 
@@ -45,18 +47,6 @@ router.post('/message', async (req, res) => {
             parts: [{ text: msg.content }]
         }));
 
-        const geminiPayload = {
-            system_instruction: {
-                parts: [{ text: SYSTEM_INSTRUCTION }]
-            },
-            contents,
-            generationConfig: {
-                temperature: 0.7,
-                topP: 0.95,
-                maxOutputTokens: 8192,
-            }
-        };
-
         // Set SSE headers for streaming
         res.setHeader('Content-Type', 'text/event-stream');
         res.setHeader('Cache-Control', 'no-cache');
@@ -64,69 +54,45 @@ router.post('/message', async (req, res) => {
         res.setHeader('X-Accel-Buffering', 'no');
         res.flushHeaders();
 
-        // Call Gemini streaming API
-        const response = await fetch(GEMINI_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(geminiPayload),
-        });
+        // Call Gemini streaming API using the official @google/genai SDK
+        let responseStream;
+        let retries = 3;
+        let delay = 1000; // Start with 1s delay
 
-        if (!response.ok) {
-            const errorBody = await response.text();
-            console.error('Gemini API error:', response.status, errorBody);
-            res.write(`data: ${JSON.stringify({ error: `Gemini API error: ${response.status}` })}\n\n`);
-            res.write('data: [DONE]\n\n');
-            return res.end();
-        }
-
-        // Stream the response body
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = '';
-
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            buffer += decoder.decode(value, { stream: true });
-
-            // Process complete SSE lines
-            const lines = buffer.split('\n');
-            buffer = lines.pop(); // Keep the last incomplete line
-
-            for (const line of lines) {
-                if (line.startsWith('data: ')) {
-                    const data = line.slice(6).trim();
-                    if (data === '[DONE]') {
-                        res.write('data: [DONE]\n\n');
-                        continue;
+        for (let i = 0; i < retries; i++) {
+            try {
+                responseStream = await ai.models.generateContentStream({
+                    model: GEMINI_MODEL,
+                    contents: contents,
+                    config: {
+                        systemInstruction: SYSTEM_INSTRUCTION,
+                        temperature: 0.7,
+                        topP: 0.95,
+                        maxOutputTokens: 8192,
                     }
-                    try {
-                        const parsed = JSON.parse(data);
-                        const text = parsed?.candidates?.[0]?.content?.parts?.[0]?.text;
-                        if (text) {
-                            res.write(`data: ${JSON.stringify({ text })}\n\n`);
-                        }
-                    } catch {
-                        // Skip unparseable chunks
-                    }
+                });
+                break;
+            } catch (err) {
+                const status = err.status || err.code || 500;
+                if (status === 429 && i < retries - 1) {
+                    console.warn(`Gemini API returned 429. Retrying in ${delay}ms... (Attempt ${i + 1}/${retries})`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2; // Exponential backoff
+                } else {
+                    console.error('Gemini API error:', status, err.message);
+                    const errorMessage = `Gemini API error: ${status}`;
+                    res.write(`data: ${JSON.stringify({ error: errorMessage })}\n\n`);
+                    res.write('data: [DONE]\n\n');
+                    return res.end();
                 }
             }
         }
 
-        // Process any remaining buffer
-        if (buffer.startsWith('data: ')) {
-            const data = buffer.slice(6).trim();
-            if (data && data !== '[DONE]') {
-                try {
-                    const parsed = JSON.parse(data);
-                    const text = parsed?.candidates?.[0]?.content?.parts?.[0]?.text;
-                    if (text) {
-                        res.write(`data: ${JSON.stringify({ text })}\n\n`);
-                    }
-                } catch {
-                    // Skip
-                }
+        // Stream the response back to the client
+        for await (const chunk of responseStream) {
+            const text = chunk.text;
+            if (text) {
+                res.write(`data: ${JSON.stringify({ text })}\n\n`);
             }
         }
 
